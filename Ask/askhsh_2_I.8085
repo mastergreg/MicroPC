@@ -28,13 +28,11 @@ ANAMMA:
 	DAD B
 	CALL SHIFTBC
 	DAD B ;HL has the needed delay
-	MOV A,L
-	MOV C,A
-	MOV A,H
-	MOV B,A
+	MOV C,L
+	MOV B,H
 	;need to turn on the led(s)
-	CALL DELB
 	CALL ONN
+	CALL DELB
 	RET
 
 SBHSIMO:
@@ -50,13 +48,11 @@ SBHSIMO:
 	DAD B
 	CALL SHIFTBC
 	DAD B ;HL has the needed delay
-	MOV A,L
-	MOV C,A
-	MOV A,H
-	MOV B,A
+	MOV C,L
+	MOV B,H
 	;need to turn on the led(s)
-	CALL DELB
 	CALL OFF
+	CALL DELB
 	RET
 SHIFTBC: ;shifts BC a bit to the left :)
 	MOV A,C
@@ -68,13 +64,13 @@ SHIFTBC: ;shifts BC a bit to the left :)
 ROTNC:
 	MOV C,A
 	MOV A,B
-	RAL
+	RRL
 	MOV B,A
 	RET	
 ROTC:
 	MOV C,A
 	MOV A,B
-	RAL
+	RRL
 	MOV B,A
 	INR B
 	RET
