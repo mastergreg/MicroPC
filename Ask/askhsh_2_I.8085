@@ -1,6 +1,5 @@
-START:
+START:	
 	LDA 2000H
-	STA 3000H
 	MOV D,A
 	RRC
 	RRC
@@ -15,6 +14,7 @@ START:
 	;D has LSB needed for SBHSIMO
 	CALL ANAMMA
 	CALL SBHSIMO
+	JMP START
 ANAMMA:
 	LXI B,0000H
 	LXI H,0000H
@@ -33,9 +33,8 @@ ANAMMA:
 	MOV A,H
 	MOV B,A
 	;need to turn on the led(s)
-	CALL ON
 	CALL DELB
-	CALL OFF
+	CALL ONN
 	RET
 
 SBHSIMO:
@@ -56,7 +55,6 @@ SBHSIMO:
 	MOV A,H
 	MOV B,A
 	;need to turn on the led(s)
-	CALL ON
 	CALL DELB
 	CALL OFF
 	RET
@@ -89,8 +87,7 @@ OFF:
 	STA 3000H
 	RET
 
-	
-	JMP START
+
 END
 
 
