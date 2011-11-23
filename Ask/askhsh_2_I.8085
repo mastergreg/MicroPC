@@ -64,13 +64,13 @@ SHIFTBC: ;shifts BC a bit to the left :)
 ROTNC:
 	MOV C,A
 	MOV A,B
-	RRL
+	RLC
 	MOV B,A
 	RET	
 ROTC:
 	MOV C,A
 	MOV A,B
-	RRL
+	RLC
 	MOV B,A
 	INR B
 	RET
