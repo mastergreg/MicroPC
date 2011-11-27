@@ -1,4 +1,5 @@
-START:	
+IN 10H
+START:
 	LDA 2000H
 	MOV D,A
 	RRC
@@ -27,6 +28,8 @@ ANAMMA:
 	CALL SHIFTBC
 	DAD B
 	CALL SHIFTBC
+	DAD B 
+	LXI B,00C8H
 	DAD B ;HL has the needed delay
 	MOV C,L
 	MOV B,H
@@ -47,6 +50,8 @@ SBHSIMO:
 	CALL SHIFTBC
 	DAD B
 	CALL SHIFTBC
+	DAD B 
+	LXI B,00C8H
 	DAD B ;HL has the needed delay
 	MOV C,L
 	MOV B,H
@@ -66,7 +71,7 @@ ROTNC:
 	MOV A,B
 	RLC
 	MOV B,A
-	RET	
+	RET
 ROTC:
 	MOV C,A
 	MOV A,B
