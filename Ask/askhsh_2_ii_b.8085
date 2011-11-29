@@ -1,0 +1,122 @@
+START1:
+	MVI E,00H
+START:
+	CALL SHOW_COUNTERS
+	CALL CHECK_INPT
+	CALL MDELAY
+	CALL INC_COUNT
+	CALL SHOW_COUNTERS
+	JMP START
+	
+CHECK_INPT:
+	LDA 2000H
+	RAL
+	CC DIAKOPH
+	RET
+
+SHOW_COUNTERS:
+	MOV A,E
+	ANI 0FH
+	CMA
+	STA 3000H
+	RET
+
+MDELAY:
+	CALL MINI_DELAY
+	CALL CHECK_INPT
+	CALL MINI_DELAY
+	CALL CHECK_INPT
+	RET
+
+MINI_DELAY:
+	DI
+	LXI B,0032H
+	CALL DELB ;xwris push kai pop. blepe sel 235
+	RET
+
+INC_COUNT:
+	MOV A,E
+	INR A
+	ANI 0FH
+	MOV E,A
+	RET
+
+INC_INTR:
+	MOV A,D
+	INR A
+	ANI 0FH
+	MOV D,A
+	RET
+
+DIAKOPH:
+	MVI A,0DH
+	SIM
+	EI
+	RET
+	
+INTR_ROUTINE:
+	PUSH B
+	PUSH D
+	PUSH H
+	CALL BEEP
+	POP H
+	POP D
+	POP B
+	CALL METRHMA ;metra posoi diakoptes einai on
+LP: 
+	RIM
+	RAL
+	RAL
+	JC LP ;perimene na mhdenistei to 6o bit ths maskas
+	CALL MINI_DELAY ;perimene na sta8eropoih8ei
+	EI ;ksanaenergopoihse tis diakopes
+	RET
+
+MAX_DELAY:
+	DI
+	LXI B,03E8H
+	CALL DELB ;den epirreazei kanenan
+	RET
+
+MHDENISMOS:
+	CMC
+	RET
+
+AUXHSH:
+	INR L
+	RET
+
+METRHMA:
+	LDA 2000H
+	LXI H,0000H
+
+ARXH:
+	RAL
+	CC AUXHSH
+	RAL
+	CC AUXHSH
+	RAL
+	CC AUXHSH
+	RAL
+	CC AUXHSH
+	RAL
+	CC AUXHSH
+	RAL	
+	CC AUXHSH
+	RAL
+	CC AUXHSH
+	RAL
+	CC AUXHSH
+	CC MHDENISMOS		
+	MOV A,L
+	RAL
+	RAL
+	RAL
+	RAL
+	ADD E
+	CMA
+	STA 3000H ;kai deikse to a8roisma tous sta leds
+	CALL MAX_DELAY ;perimene na doume to apotelesma
+	RET
+
+END
