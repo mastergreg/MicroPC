@@ -10,5 +10,3 @@ LOOPA:
 	DCR A
 	JMP LOOPA
 END
-	
-	
