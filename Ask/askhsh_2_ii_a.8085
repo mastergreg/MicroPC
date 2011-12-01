@@ -2,70 +2,43 @@ START1:
 	MVI E,00H
 	MVI D,00H	
 START:
-	CALL SHOW_COUNTERS
-	CALL CHECK_INPT
-	CALL MDELAY
-	CALL INC_COUNT
-	CALL SHOW_COUNTERS
-	JMP START
-	
-CHECK_INPT:
-	LDA 2000H
-	RAL
-	CC DIAKOPH
-	RET
-
-SHOW_COUNTERS:
 	MOV A,D
 	RAL
 	RAL
 	RAL
 	RAL
-	CC MHDENISMOS
+	JC MHDENISMOS
+SYNEXEIA:
 	ADD E
 	CMA
 	STA 3000H
-	RET
-
-MDELAY:
-	CALL MINI_DELAY
-	CALL MINI_DELAY
-	CALL CHECK_INPT
-	RET
-
-MINI_DELAY:
+	LXI B,0064H
 	DI
-	LXI B,0032H
-	CALL DELB ;xwris push kai pop. blepe sel 235
-	RET
-
-INC_COUNT:
+	CALL DELB
+	LDA 2000H
+	RAL
+	JC DIAKOPH
+SYN:	
 	MOV A,E
 	INR A
 	ANI 0FH
 	MOV E,A
-	RET
-
-INC_INTR:
-	MOV A,D
-	INR A
-	ANI 0FH
-	MOV D,A
-	RET
+	JMP START
 
 DIAKOPH:
 	MVI A,0DH
 	SIM
 	EI
-	RET
+	JMP SYN
 	
 INTR_ROUTINE:
-	CALL MINI_DELAY ;perimene na sta8eropoih8ei to
+	LXI B,0032H
+	CALL DELB ;perimene na sta8eropoih8ei to
 	PUSH PSW ;6o bit ths maskas sto 1
 	PUSH B
 	PUSH D
 	PUSH H
-	CALL BEEP ;tous epirreazei olous
+	CALL BEEP ;tous epireazei olous
 	POP H
 	POP D
 	POP B
@@ -75,12 +48,15 @@ LP:
 	RAL
 	RAL
 	JC LP ;perimene na mhdenistei to 6o bit ths maskas
-	CALL MINI_DELAY ;perimene na sta8eropoih8ei
-	CALL INC_INTR ;aukshse to metrhth twn diakopwn
+	CALL DELB ;perimene na sta8eropoih8ei
+	MOV A,D
+	INR A
+	ANI 0FH
+	MOV D,A ;aukshse to metrhth twn diakopwn
 	EI ;ksanaenergopoihse tis diakopes
 	RET
 
 MHDENISMOS:
 	CMC
-	RET
+	JMP SYNEXEIA
 END
