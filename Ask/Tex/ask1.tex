@@ -7,22 +7,23 @@
 \usepackage{minted}
 \usepackage{listings}
 \usepackage{enumitem} \usepackage{framed} \usepackage{relsize}
-\usepackage{float} \setmainfont[Mapping=TeX-text]{Times New Roman}
+\usepackage{float} \setmainfont[Mapping=TeX-text]{DejaVu Sans}
 \begin{document}
 
-%\renewcommand{\subsection}{\subsec.\roman}
 \include{title/title}
 
 \section*{} \setcounter{section}{1}
-\subsection*{Άσκηση 1.ii}\setcounter{subsection}{1}
+\subsection*{Άσκηση 1(ii)}\setcounter{subsection}{1}
 Χρονόμετρο δευτερολέπτων
-
 \inputminted[linenos,obeytabs,fontsize=\footnotesize]{oldasm}{../askhsh_1_ii.8085}
-\subsection*{Άσκηση 2.i}
+\subsection*{Άσκηση 2(i)}
+Χρονοκαθυστέρηση στα LEDS
 \inputminted[linenos,obeytabs,fontsize=\footnotesize]{oldasm}{../askhsh_2_i.8085}
-\subsection*{Άσκηση 2.ii\_α}
+\subsection*{Άσκηση 2(ii) α}
+Χρονόμετρο και μετρητής διακοπών
 \inputminted[linenos,obeytabs,fontsize=\footnotesize]{oldasm}{../askhsh_2_ii_a.8085}
-\subsection*{Άσκηση 2.ii\_β}
+\subsection*{Άσκηση 2(ii) β}
+Χρονόμετρο και μετρητής bit της θύρας εισόδου
 \inputminted[linenos,obeytabs,fontsize=\footnotesize]{oldasm}{../askhsh_2_ii_b.8085}
 
 \end{document}
