@@ -1,0 +1,96 @@
+START1:
+	MVI E,00H
+START:
+	MOV A,E
+	ANI 0FH
+	CMA
+	STA 3000H
+	LXI B,0064H
+	DI
+	CALL DELB 
+	LDA 2000H
+	RAL	
+	JC DIAKOPH
+SYN:
+	MOV A,E
+	INR A
+	ANI 0FH
+	MOV E,A
+	JMP START
+
+DIAKOPH:
+	MVI A,0DH
+	SIM
+	EI
+	JMP SYN
+	
+INTR_ROUTINE:
+	PUSH B
+	PUSH D
+	PUSH H
+	CALL BEEP
+	POP H
+	POP D
+	POP B
+METRHMA: ;metra posoi diakoptes einai on
+	LDA 2000H
+	LXI H,0000H
+ARXH:
+	RAL
+	JNC S1
+	INR L
+S1:
+	RAL
+	JNC S2
+	INR L
+S2:
+	RAL
+	JNC S3
+	INR L
+S3:
+	RAL
+	JNC S4
+	INR L
+S4:	
+	RAL	
+	JNC S5
+	INR L
+S5:
+	RAL	
+	JNC S6
+	INR L
+S6:
+	RAL	
+	JNC S7
+	INR L
+S7:
+	RAL
+	JNC S8
+	INR L
+S8:
+	JC MHDENISMOS
+SYNEXEIA:		
+	MOV A,L
+	RAL
+	RAL
+	RAL
+	RAL
+	ADD E
+	CMA
+	STA 3000H ;kai deikse to a8roisma tous sta leds
+	LXI B,03E8H
+	CALL DELB ;perimene na doume to apotelesma
+LP: 
+	RIM
+	RAL
+	RAL
+	JC LP ;perimene na mhdenistei to 6o bit ths maskas
+	LXI B,0032H
+	CALL DELB ;perimene na sta8eropoih8ei
+	EI ;ksanaenergopoihse tis diakopes
+	RET
+
+MHDENISMOS:
+	CMC
+	JMP SYNEXEIA
+END
