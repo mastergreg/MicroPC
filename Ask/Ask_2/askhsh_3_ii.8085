@@ -1,0 +1,62 @@
+START:	LDA 2000H
+	CALL XOR
+	CALL XOR
+	CALL XOR
+	CALL XOR
+	MOV D,C
+	MOV A,C
+	RAR
+	MOV C,A
+	MOV A,D
+	RAL
+	RAL
+	RAL
+	RAL
+	RAL
+	RAL
+	CALL OR
+	MOV A,C
+	CMA
+	STA 3000H
+	JMP START
+
+
+;diabazei apo ton A, 
+;xrhsimopoiei ton b ws buffer
+;grafei to apotelesma ston C
+XOR:	RAL	;CALL XOR
+	JC ONE
+	RAL
+	JC TRUE
+	JMP FALSE
+ONE:	CMC
+	RAL
+	JC FALSEX
+	JMP TRUE
+
+OR:	RAL	;CALL OR
+	JC TRUE
+	RAL
+	JC TRUE
+	JMP FALSE
+
+TRUE:	CMC
+	MOV B,A
+	MOV A,C
+	RAL
+	ORI 01H
+	MOV C,A
+	MOV A,B
+	RET
+
+FALSEX: CMC
+FALSE:	MOV B,A
+	MOV A,C
+	RAL
+	ANI FEH
+	MOV C,A
+	MOV A,B
+	RET
+END
+	
+	
