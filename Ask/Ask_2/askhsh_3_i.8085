@@ -58,5 +58,3 @@ FALSE:	MOV B,A
 	MOV A,B
 	RET
 END
-	
-	
