@@ -24,37 +24,38 @@ START:	LDA 2000H
 ;diabazei apo ton A, 
 ;xrhsimopoiei ton b ws buffer
 ;grafei to apotelesma ston C
-XOR:	RAL	;CALL XOR
-	JC ONE
-	RAL
-	JC TRUE
-	JMP FALSE
-ONE:	CMC
-	RAL
-	JC FALSEX
-	JMP TRUE
+XOR:	RAL	    ;CALL XOR
+	JC ONE      ;XY
+	RAL         ;0Y
+	JC TRUE     ;0Y
+	JMP FALSE   ;00
+ONE:	CMC     ;1Y
+	RAL         ;1Y
+	JC FALSEX   ;11
+	JMP TRUE    ;10
 
-OR:	RAL	;CALL OR
-	JC TRUE
-	RAL
-	JC TRUE
-	JMP FALSE
+OR:	RAL	;CALL OR;XY
+	JC TRUE     ;1Y
+	RAL         ;0Y
+	JC TRUE     ;11
+	JMP FALSE   ;00
 
 TRUE:	CMC
-	MOV B,A
-	MOV A,C
-	RAL
-	ORI 01H
-	MOV C,A
-	MOV A,B
-	RET
+	MOV B,A     ;USE B AS BUFFER
+	MOV A,C     ;LOAD PREVIOUS OUTCOME FORM C
+	RAL         ;SHIFT A
+	ORI 01H     ;ADD 1 IN THE END
+    JMP RESTORE
 
 FALSEX: CMC
-FALSE:	MOV B,A
-	MOV A,C
-	RAL
-	ANI FEH
-	MOV C,A
+FALSE:	MOV B,A ;USE B AS BUFFER
+	MOV A,C     ;LOAD PREV FROM C
+	RAL         ;SHIFT A
+	ANI FEH     ;ADD 0 IN THE END
+    JMP RESTORE
+
+RESTORE
+	MOV C,A     ;RESTORE BUFFERS AS THEY WERE
 	MOV A,B
 	RET
 END
