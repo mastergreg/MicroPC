@@ -1,3 +1,4 @@
+	IN  10H
     MVI A,10H   ;fortwnoume to 10H
     STA 0BB0H   ;wste na ka8arisei
     STA 0BB1H   ;to display
@@ -11,7 +12,7 @@ LP:
     CALL KIND   ;h kind 8a ferei ton
     MOV B,A     ;kwdiko pshfiou ston A
     ANI 0FH     ;xrhsimopoioume ton B ws buffer
-    STA 0BB54H  ;grafoume ta 4LSB sthn 8esh tou pemptou pshfiou
+    STA 0BB4H	;grafoume ta 4LSB sthn 8esh tou pemptou pshfiou
     MOV A,B
     RLC         ;me kuklikh olis8ish 4fores 
     RLC         ;fernoume ta 4MSB sta 4LSB 

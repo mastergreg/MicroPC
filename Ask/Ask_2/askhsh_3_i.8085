@@ -30,7 +30,7 @@ XOR:
     JMP FALSE   ;00
 ONE:            ;1Y
     RAL         ;1Y
-    JC FALSEX   ;11
+    JC FALSE   	;11
     JMP TRUE    ;10
 
 OR: 
@@ -42,7 +42,7 @@ OR:
 
 TRUE:
     MOV B,A     ;USE B AS BUFFER
-    MOV A,C     ;LOAD PREVIOUS OUTCOME FORM C
+    MOV A,C     ;LOAD PREVIOUS OUTCOME FROM C
     RAL         ;SHIFT A
     ORI 01H     ;ADD 1 IN THE END
     JMP RESTORE
