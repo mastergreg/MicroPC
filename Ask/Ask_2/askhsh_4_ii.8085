@@ -1,4 +1,4 @@
-	IN  10H
+    IN  10H
     MVI A,10H   ;fortwnoume to 10H
     STA 0BB0H   ;wste na ka8arisei
     STA 0BB1H   ;to display
