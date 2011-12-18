@@ -4,6 +4,7 @@
 \usepackage{xltxtra}
 \usepackage{xunicode} \usepackage{graphicx}
 \usepackage{color} \usepackage{xgreek} \usepackage{fancyvrb}
+\usepackage{colortbl}
 \usepackage{minted}
 \usepackage{listings}
 \usepackage{enumitem} \usepackage{framed} \usepackage{relsize}
@@ -18,6 +19,22 @@
 7
 \end{minted}
 \section*{Ζήτημα 7\textsuperscript{o}}
+
+\begin{table}[h]
+	\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+	\hline
+	& 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15\\
+	\hline
+	Κεντρικός & \multicolumn{10}{c|}{\cellcolor{green}Πράσινο} &
+	\cellcolor{yellow}Κίτρινο & \multicolumn{4}{c|}{\cellcolor{red}Κόκκινο}\\
+	\hline
+	Πύλη & \multicolumn{11}{c}{\cellcolor{red}Κόκκινο} &
+	\multicolumn{3}{c|}{\cellcolor{green}Πράσινο} & \cellcolor{yellow}Κίτρινο\\
+	\hline
+	\end{tabular}
+	\caption{Διάγραμμα χρονισμού των φαναριών}
+\end{table}
+
 \inputminted[linenos,obeytabs,frame=leftline,fontsize=\footnotesize]{oldasm}{files/fanaria.8085}
 \section*{} 
 
