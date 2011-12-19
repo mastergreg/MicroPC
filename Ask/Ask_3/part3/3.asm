@@ -23,7 +23,7 @@ START:
     PRINT_STRING MSG
     CALL GET_INPUT
 CNT:
-    CALL PRINT_DEC
+    CALL PRINTDX
     PRINT_STRING LINE
 
 EX:
@@ -42,43 +42,31 @@ READL:
     JL READL
     CMP AL,39H
     JG READL
-    SUB AL,30H ;FOR NUMBERS PUT THEM IN DX
-    MOV AH,0   
-    MOV BX,AX
-    MOV AX,10
-    MUL DX
-    MOV DX,AX
-    MOV AX,BX
-    ADD DX,AX
+    SUB AL,30H ;FOR NUMBERS PUT THEM IN DX     
+      
+    PUSH DX  
+    MOV DL,AL                                  
+    INC BL
     LOOP READL
     RET
 GET_INPUT ENDP
 
-PRINT_DEC PROC NEAR
+PRINTDX PROC NEAR
 ;    PUSH AX
 ;    PUSH BX
 ;    PUSH CX
 ;    PUSH DX
-    MOV AX,DX   ;Put number in AX
-    MOV BX,10   ;Put the divisor in BX
-    MOV CX,0    ;Counts the number of decimal digits
-AGAIN:
-    MOV DX,0
-    DIV BX      ;quotient in AX and remainder in DX
-    PUSH DX
-    INC CX
-    CMP AX,0    ;Check if quotient = 0 (all digits stored in stack)
-    JNE AGAIN
+    MOV CX,BX    ;Counts the number of decimal digits
 PRINT_LOOP:
-    POP DX
     PRINT_NUM DL
+    POP DX
     LOOP PRINT_LOOP
 ;    POP DX
 ;    POP CX
 ;    POP BX
 ;    POP AX  
     RET
-PRINT_DEC ENDP
+PRINTDX ENDP
 
 CODE_SEG ENDS
 
