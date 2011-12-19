@@ -6,7 +6,8 @@ ENDS
 
 
 DATA_SEG SEGMENT
-    MSG DB "GIMME <=20 CHARS END PRESS RETURN '/' TO QUIT$"
+    MSG DB "GIMME <=20 CHARS END PRESS RETURN '/' TO QUIT",0AH,0DH,"$"
+    LINE DB 0AH,0DH,"$"
 ENDS
 
 CODE_SEG SEGMENT
@@ -17,23 +18,30 @@ MAIN PROC FAR
     MOV AX,DATA_SEG
     MOV DS,AX
     MOV ES,AX
-    CALL GET_INPUT
-    PRINT_NUM DL
 
 START:
     PRINT_STRING MSG
+    CALL GET_INPUT
+CNT:
+    CALL PRINT_DEC
+    PRINT_STRING LINE
 
 EX:
     EXIT
 MAIN ENDP
 
+
 GET_INPUT PROC NEAR
     MOV DX,0
     MOV CX,20
 READL:
-    READ
+    READ       
     CMP AL,'/'
-    JE EX
+    JE CNT  
+    CMP AL,30H
+    JL READL
+    CMP AL,39H
+    JG READL
     SUB AL,30H ;FOR NUMBERS PUT THEM IN DX
     MOV AH,0   
     MOV BX,AX
@@ -46,6 +54,31 @@ READL:
     RET
 GET_INPUT ENDP
 
+PRINT_DEC PROC NEAR
+;    PUSH AX
+;    PUSH BX
+;    PUSH CX
+;    PUSH DX
+    MOV AX,DX   ;Put number in AX
+    MOV BX,10   ;Put the divisor in BX
+    MOV CX,0    ;Counts the number of decimal digits
+AGAIN:
+    MOV DX,0
+    DIV BX      ;quotient in AX and remainder in DX
+    PUSH DX
+    INC CX
+    CMP AX,0    ;Check if quotient = 0 (all digits stored in stack)
+    JNE AGAIN
+PRINT_LOOP:
+    POP DX
+    PRINT_NUM DL
+    LOOP PRINT_LOOP
+;    POP DX
+;    POP CX
+;    POP BX
+;    POP AX  
+    RET
+PRINT_DEC ENDP
 
 CODE_SEG ENDS
 
