@@ -6,8 +6,17 @@ ENDS
 
 
 DATA_SEG SEGMENT
-    MSG DB "GIMME <=20 CHARS END PRESS RETURN '/' TO QUIT",0AH,0DH,"$"
-    LINE DB 0AH,0DH,"$"
+    MSG DB "GIMME <=20 CHARS END PRESS RETURN '/' TO QUIT",0AH,0DH,"$"  
+    SPACE DB " "
+    LINE DB 0AH,0DH,"$"       
+    NUMS DB 20 DUP("$")
+    NCNT DW 0
+    LOWC DB 20 DUP("$")
+    LCNT DW 0
+    UPRC DB 20 DUP("$")
+    UCNT DW 0
+    
+    
 ENDS
 
 CODE_SEG SEGMENT
@@ -21,10 +30,17 @@ MAIN PROC FAR
 
 START:
     PRINT_STRING MSG
+    MOV DX,0
+    MOV BX,0
     CALL GET_INPUT
 CNT:
-    CALL PRINTDX
-    PRINT_STRING LINE
+    PRINT_STRING NUMS
+    PRINT SPACE
+    PRINT_STRING LOWC
+    PRINT SPACE
+    PRINT_STRING UPRC
+    PRINT_STRING LINE  
+    JMP START
 
 EX:
     EXIT
@@ -35,38 +51,47 @@ GET_INPUT PROC NEAR
     MOV DX,0
     MOV CX,20
 READL:
-    READ       
+    READ  
+    CMP AL,0DH
+    JE CNT     
     CMP AL,'/'
-    JE CNT  
-    CMP AL,30H
+    JE EX  
+    CMP AL,30H ;0
     JL READL
-    CMP AL,39H
-    JG READL
-    SUB AL,30H ;FOR NUMBERS PUT THEM IN DX     
-      
-    PUSH DX  
-    MOV DL,AL                                  
-    INC BL
+    CMP AL,40H ;9+1
+    JL NUMBERS  
+    CMP AL,41H ;A
+    JL READL
+    CMP AL,5BH ;Z+1
+    JL ULETTER
+    CMP AL,61H ;a
+    JL  READL
+    CMP AL,7BH ;z+1
+    JL LLETTER
+    JMP READL
+NUMBERS:
+    MOV BX,OFFSET NUMS
+    ADD BX,NCNT
+    MOV [BX] ,AL
+    INC NCNT
+    LOOP READL
+    RET
+LLETTER:      
+    MOV BX,OFFSET LOWC
+    ADD BX,LCNT
+    MOV [BX] ,AL
+    INC LCNT
+    LOOP READL
+    RET
+ULETTER:
+    MOV BX,OFFSET UPRC
+    ADD BX,UCNT
+    MOV [BX] ,AL
+    INC UCNT
     LOOP READL
     RET
 GET_INPUT ENDP
 
-PRINTDX PROC NEAR
-;    PUSH AX
-;    PUSH BX
-;    PUSH CX
-;    PUSH DX
-    MOV CX,BX    ;Counts the number of decimal digits
-PRINT_LOOP:
-    PRINT_NUM DL
-    POP DX
-    LOOP PRINT_LOOP
-;    POP DX
-;    POP CX
-;    POP BX
-;    POP AX  
-    RET
-PRINTDX ENDP
 
 CODE_SEG ENDS
 
