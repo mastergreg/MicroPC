@@ -6,15 +6,10 @@ ENDS
 
 
 DATA_SEG SEGMENT
-    MSG DB "GIMME <=20 CHARS END PRESS RETURN '/' TO QUIT",0AH,0DH,"$"  
+    FIRST DB "First number: $"
+    SECOND DB "Second number: $"  
     SPACE DB " "
     LINE DB 0AH,0DH,"$"       
-    NUMS DB 20 DUP("$")
-    NCNT DW 0
-    LOWC DB 20 DUP("$")
-    LCNT DW 0
-    UPRC DB 20 DUP("$")
-    UCNT DW 0
     
     
 ENDS
@@ -23,17 +18,64 @@ CODE_SEG SEGMENT
     ASSUME CS:CODE_SEG,SS:STACK_SEG,DS:DATA_SEG,ES:DATA_SEG
 
 MAIN PROC FAR
-    CALL GET_INPUT
+    CALL GET_INPUT  
+    MOV AX,BX
+    MUL SI
+    MOV BP,AX
+    PUSH BP
+    PUSH CX
+    MOV CX,DX
+    MOV AX,BX
+    MUL DI
+    ADD AX,CX
+    JNO NOTOVF1
+    INC DX
+NOTOVF1:
+    POP CX
+    MOV BX,DX
+    PUSH BX
+    MOV BX,AX
+    MOV AX,CX
+    MUL SI
+    ADD AX,BX
+    JNO NOTOVF2
+    INC DX
+NOTOVF2:
+    POP BX
+    MOV BP,AX
+    PUSH BP
+    MOV AX,CX
+    MUL DI
+    ADD AX,BX
+    JNO NOTOVF3
+    INC DX
+NOTOVF3:
+    ADD AX,CX
+    JNO NOTOVF4  
+    INC DX  
+NOTOVF4:
+    MOV BP,AX
+    PUSH BP
+    MOV BP,DX  
+    ;now BP has the answer
+        
+         
+    
     EXIT
 MAIN ENDP
 
-GET_INPUT PROC NEAR
+GET_INPUT PROC NEAR    
+    PRINT_STRING FIRST
     GETHON CX
-    GETHON BX
+    GETHON BX   
+    PRINT_STRING LINE
+    PRINT_STRING SECOND
     GETHON DI
     GETHON SI
+    PRINT_STRING LINE
     RET
-ENDP GET_INPUT
+ENDP GET_INPUT   
+    
 
 GETHEX PROC NEAR
 R:  READ

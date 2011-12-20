@@ -1,9 +1,7 @@
 ;This macro change registers AH,AL
 READ MACRO 
-    MOV AH,8
+    MOV AH,1
     INT 21H
-    JMP FIN
-FIN:
 ENDM  
 
 ;This macro changes registers AH,DL
