@@ -21,34 +21,39 @@ MAIN PROC FAR
     MOV AX,DATA_SEG
     MOV DS,AX
     MOV ES,AX
-    CALL GET_INPUT  
-    MOV AX,BX
+    CALL GET_INPUT    
+    MOV AX,BX 
+    MOV DX,0
     MUL SI
-    MOV BP,AX
+    MOV BP,AX   
     PUSH BP
     PUSH CX
     MOV CX,DX
-    MOV AX,BX
+    MOV AX,BX  
+    MOV DX,0
     MUL DI
     ADD AX,CX
     JNO NOTOVF1
     INC DX
 NOTOVF1:
     POP CX
-    MOV BX,DX
+    MOV BX,DX 
     PUSH BX
     MOV BX,AX
     MOV AX,CX
+    MOV DX,0
     MUL SI
     ADD AX,BX
     JNO NOTOVF2
     INC DX
 NOTOVF2:
     POP BX
-    MOV BP,AX
+    MOV BP,AX    ;2ND DIGIT
     PUSH BP
     MOV AX,CX
-    MUL DI
+    MOV CX,DX  ; REALLY??
+    MOV DX,0
+    MUL DI  
     ADD AX,BX
     JNO NOTOVF3
     INC DX
@@ -61,6 +66,13 @@ NOTOVF4:
     PUSH BP
     MOV BP,DX  
     ;now BP has the answer
+    CALL DIGITS_TO_HEXS
+    POP BP
+    CALL DIGITS_TO_HEXS
+    POP BP
+    CALL DIGITS_TO_HEXS
+    POP BP 
+    CALL DIGITS_TO_HEXS
         
          
     
@@ -77,7 +89,7 @@ GET_INPUT PROC NEAR
     GETHON SI
     PRINT_STRING LINE
     RET
-ENDP GET_INPUT   
+GET_INPUT ENDP
     
 
 GETHEX PROC NEAR
@@ -105,6 +117,49 @@ CAPS:
 SMALL:
     SUB AL,57H
     RET
+
+GETHEX ENDP
+
+
+;======MAKE 16 BITS TO HEX=======  
+
+DIGITS_TO_HEXS PROC NEAR
+     MOV BX, BP
+     MOV BL, BH ;APOMONWNW TA 4 MSB
+     SHR BL, 4  ;OLIS8HSE TA STIS 4 LEAST SIGNIF 8ESEIS
+     CALL PRINT_HEX
+     MOV BX, BP
+     MOV BL,BH
+     AND BL, 0FH
+     CALL PRINT_HEX
+     MOV BX, BP
+     AND BL, 0F0H
+     SHR BL, 4
+     CALL PRINT_HEX
+     MOV BX, BP
+     AND BL, 0FH
+     CALL PRINT_HEX
+     
+     
+     RET    
+DIGITS_TO_HEXS ENDP
+
+PRINT_HEX PROC NEAR
+    CMP BL,9 ;AN O ARI8MOS EINAI METAKSU 0 K 9 PROS8ETW 30H
+    JG ADDR1 
+    ADD BL, 30H
+    JMP ADDR2
+
+ADDR1:
+    ADD BL, 37H ;DIAFORETIKA PROS8ETW 37H ('A' = 41H)
+ADDR2:
+    PRINT BL
+    RET  
+    
+PRINT_HEX ENDP
+;======END OF MAKE 16 BITS TO HEX========
+ 
+    
     
 
 
