@@ -30,12 +30,12 @@ MAIN PROC FAR
     PUSH BP     ; now pushed
     PUSH CX     ; don't need X1 right now
     MOV CX,DX   ; so use it as buffer
-    MOV AX,BX   ;AX=X0
-    MOV DX,0    ;DX=0
-    MUL DI      ;DX::AX = X0*Y1
-    ADD AX,CX   ;AX+=previous DX
+    MOV AX,BX   ; AX=X0
+    MOV DX,0    ; DX=0
+    MUL DI      ; DX::AX = X0*Y1
+    ADD AX,CX   ; AX+=previous DX
     JNC NOTOVF1
-    INC DX      ;if carry increase DX
+    INC DX      ; if carry increase DX
 NOTOVF1:
     POP CX      ; will need X1
     MOV BX,DX   ; X0 is no longer needed
@@ -48,32 +48,39 @@ NOTOVF1:
     JNC NOTOVF2 ; if carry increase DX
     INC DX
 NOTOVF2:
-    POP BX
-    MOV BP,AX    ;2ND DIGIT
-    PUSH BP
-    MOV AX,CX
-    MOV CX,DX  ; REALLY??
-    MOV DX,0
-    MUL DI  
-    ADD AX,BX
-    JNC NOTOVF3
+    POP BX      ; BX = previous DX
+    MOV BP,AX   
+    ; == next 16 bits in BP
+    PUSH BP     ; now pushed       
+    MOV AX,CX   ; AX = X1
+    MOV CX,DX   ; CX = DX
+    MOV DX,0    ; DX = 0
+    MUL DI      ; DX::AX = X1*Y1
+    ADD AX,BX   ; AX += previous previous DX
+    JNC NOTOVF3 ; if carry increase DX
     INC DX
 NOTOVF3:
-    ADD AX,CX
-    JNC NOTOVF4  
+    ADD AX,CX   ; AX+= previous DX
+    JNC NOTOVF4 ; if carry increase DX
     INC DX  
 NOTOVF4:
     MOV BP,AX
-    PUSH BP
-    MOV BP,DX  
-    ;now BP has the answer
+    ; == next 16 bits in BP
+    PUSH BP     ; now pushed
+    MOV BP,DX
+    ; == final 16 bits in BP
+    ; now BP has the answer
     CALL DIGITS_TO_HEXS
+    ; printed 16 bits in HEX
     POP BP
     CALL DIGITS_TO_HEXS
+    ; printed 16 bits in HEX
     POP BP
     CALL DIGITS_TO_HEXS
+    ; printed 16 bits in HEX
     POP BP 
     CALL DIGITS_TO_HEXS
+    ; printed 16 bits in HEX
         
          
     MOV AL,0H 
@@ -92,7 +99,12 @@ GET_INPUT PROC NEAR
     RET
 GET_INPUT ENDP
     
-
+; == translates HEX input to binary values
+; in AL
+; "A" -> 10
+; "a" -> 10
+; "9" -> 9
+; "F" -> 15
 GETHEX PROC NEAR
 R:  READ
     MOV AH,0
@@ -123,7 +135,6 @@ GETHEX ENDP
 
 
 ;======MAKE 16 BITS TO HEX=======  
-
 DIGITS_TO_HEXS PROC NEAR
      MOV BX, BP
      MOV BL, BH ;APOMONWNW TA 4 MSB
@@ -146,7 +157,7 @@ DIGITS_TO_HEXS PROC NEAR
 DIGITS_TO_HEXS ENDP
 
 PRINT_HEX PROC NEAR
-    CMP BL,9 ;AN O ARI8MOS EINAI METAKSU 0 K 9 PROS8ETW 30H
+    CMP BL,9    ;AN O ARI8MOS EINAI METAKSU 0 K 9 PROS8ETW 30H
     JG ADDR1 
     ADD BL, 30H
     JMP ADDR2
@@ -159,12 +170,6 @@ ADDR2:
     
 PRINT_HEX ENDP
 ;======END OF MAKE 16 BITS TO HEX========
- 
-    
-    
-
-
-
 
 CODE_SEG ENDS
 
