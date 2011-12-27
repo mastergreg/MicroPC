@@ -22,17 +22,18 @@ MAIN PROC FAR
     MOV DS,AX
     MOV ES,AX
     CALL GET_INPUT    
-    MOV AX,BX 
-    MOV DX,0
-    MUL SI
+    MOV AX,BX 	;AX=X0
+    MOV DX,0	;DX=0
+    MUL SI 		;DX::AX has the result
     MOV BP,AX   
-    PUSH BP
-    PUSH CX
-    MOV CX,DX
-    MOV AX,BX  
-    MOV DX,0
-    MUL DI
-    ADD AX,CX
+	; == 1st digit in BP
+    PUSH BP 	; now pushed
+    PUSH CX		; don't need CX right now
+    MOV CX,DX 	; so use it as buffer
+    MOV AX,BX  	;AX=X0
+    MOV DX,0	;DX=0
+    MUL DI		;DX::AX = X0*Y1
+    ADD AX,CX	;AX+=previous DX
     JNC NOTOVF1
     INC DX
 NOTOVF1:
