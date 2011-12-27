@@ -1,6 +1,6 @@
 ;This macro change registers AH,AL
 READ MACRO 
-    MOV AH,8
+    MOV AH,1
     INT 21H
 ENDM  
 

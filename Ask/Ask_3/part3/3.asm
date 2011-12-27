@@ -7,13 +7,14 @@ ENDS
 
 DATA_SEG SEGMENT
     MSG DB "GIMME <=20 CHARS END PRESS RETURN '/' TO QUIT",0AH,0DH,"$"  
+    MSG2 DB " => $"
     SPACE DB " "
     LINE DB 0AH,0DH,"$"       
-    NUMS DB 20 DUP("$")
+    NUMS DB 21 DUP("$")
     NCNT DW 0
-    LOWC DB 20 DUP("$")
+    LOWC DB 21 DUP("$")
     LCNT DW 0
-    UPRC DB 20 DUP("$")
+    UPRC DB 21 DUP("$")
     UCNT DW 0
     
     
@@ -34,6 +35,7 @@ START:
     MOV BX,0
     CALL GET_INPUT
 CNT:
+    PRINT_STRING MSG2
     PRINT_STRING NUMS
     PRINT SPACE
     PRINT_STRING LOWC
