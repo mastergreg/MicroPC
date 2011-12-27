@@ -22,30 +22,30 @@ MAIN PROC FAR
     MOV DS,AX
     MOV ES,AX
     CALL GET_INPUT    
-    MOV AX,BX 	;AX=X0
-    MOV DX,0	;DX=0
-    MUL SI 		;DX::AX has the result
+    MOV AX,BX   ;AX=X0
+    MOV DX,0    ;DX=0
+    MUL SI      ;DX::AX = X0*Y0
     MOV BP,AX   
-	; == 1st digit in BP
-    PUSH BP 	; now pushed
-    PUSH CX		; don't need CX right now
-    MOV CX,DX 	; so use it as buffer
-    MOV AX,BX  	;AX=X0
-    MOV DX,0	;DX=0
-    MUL DI		;DX::AX = X0*Y1
-    ADD AX,CX	;AX+=previous DX
+    ; == 16 LSB in BP
+    PUSH BP     ; now pushed
+    PUSH CX     ; don't need X1 right now
+    MOV CX,DX   ; so use it as buffer
+    MOV AX,BX   ;AX=X0
+    MOV DX,0    ;DX=0
+    MUL DI      ;DX::AX = X0*Y1
+    ADD AX,CX   ;AX+=previous DX
     JNC NOTOVF1
-    INC DX
+    INC DX      ;if carry increase DX
 NOTOVF1:
-    POP CX
-    MOV BX,DX 
-    PUSH BX
-    MOV BX,AX
-    MOV AX,CX
-    MOV DX,0
-    MUL SI
-    ADD AX,BX
-    JNC NOTOVF2
+    POP CX      ; will need X1
+    MOV BX,DX   ; X0 is no longer needed
+    PUSH BX     ; save DX
+    MOV BX,AX   ; save AX
+    MOV AX,CX   ; AX = X1
+    MOV DX,0    ; DX = 0
+    MUL SI      ; DX::AX = X1*Y0
+    ADD AX,BX   ; AX+=previous AX
+    JNC NOTOVF2 ; if carry increase DX
     INC DX
 NOTOVF2:
     POP BX
