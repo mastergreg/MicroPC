@@ -45,6 +45,7 @@ CNT:
     JMP START
 
 EX:
+    MOV AL,0H 
     EXIT
 MAIN ENDP
 

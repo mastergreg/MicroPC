@@ -75,7 +75,7 @@ NOTOVF4:
     CALL DIGITS_TO_HEXS
         
          
-    
+    MOV AL,0H 
     EXIT
 MAIN ENDP
 

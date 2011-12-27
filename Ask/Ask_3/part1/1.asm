@@ -41,6 +41,7 @@ START:
     PRINT_STRING NEW_LINE      ;ALLAGH GRAMMHS
     JMP START
 QUIT:
+    MOV AL,0H 
     EXIT                       ;APO TO MACRO
     
 
