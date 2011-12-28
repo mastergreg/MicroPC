@@ -22,16 +22,16 @@ MAIN PROC FAR
     MOV DS,AX
     MOV ES,AX
     CALL GET_INPUT    
-    MOV AX,BX   ;AX=X0
-    MOV DX,0    ;DX=0
-    MUL SI      ;DX::AX = X0*Y0
+    MOV AX,BX   ; AX = X0
+    MOV DX,0    ; DX = 0
+    MUL SI      ; DX::AX = X0*Y0
     MOV BP,AX   
     ; == 16 LSB in BP
     PUSH BP     ; now pushed
     PUSH CX     ; don't need X1 right now
     MOV CX,DX   ; so use it as buffer
-    MOV AX,BX   ; AX=X0
-    MOV DX,0    ; DX=0
+    MOV AX,BX   ; AX = X0
+    MOV DX,0    ; DX = 0
     MUL DI      ; DX::AX = X0*Y1
     ADD AX,CX   ; AX+=previous DX
     JNC NOTOVF1
@@ -44,7 +44,7 @@ NOTOVF1:
     MOV AX,CX   ; AX = X1
     MOV DX,0    ; DX = 0
     MUL SI      ; DX::AX = X1*Y0
-    ADD AX,BX   ; AX+=previous AX
+    ADD AX,BX   ; AX += previous AX
     JNC NOTOVF2 ; if carry increase DX
     INC DX
 NOTOVF2:
@@ -60,7 +60,7 @@ NOTOVF2:
     JNC NOTOVF3 ; if carry increase DX
     INC DX
 NOTOVF3:
-    ADD AX,CX   ; AX+= previous DX
+    ADD AX,CX   ; AX += previous DX
     JNC NOTOVF4 ; if carry increase DX
     INC DX  
 NOTOVF4:
