@@ -4,7 +4,13 @@ READ MACRO
     INT 21H
 ENDM  
 
-;This macro changes registers AH,DL
+READNB MACRO 
+    MOV AH,06H
+    MOV DL,0FFH
+    INT 21H
+ENDM  
+
+;This macro uses registers AH,DL
 PRINT MACRO CHAR
     PUSH AX
     PUSH DX
@@ -15,7 +21,7 @@ PRINT MACRO CHAR
     POP AX
 ENDM
 
-;This macro change registers AH,DX
+;This macro uses registers AH,DX
 PRINT_STRING MACRO STRING
     PUSH AX 
     PUSH DX
@@ -26,42 +32,7 @@ PRINT_STRING MACRO STRING
     POP AX
 ENDM
 
-PRINT_NUM MACRO CHAR
-    MOV DL, CHAR
-    ADD DL, 30H
-    MOV AH, 2 
-    INT 21H
-ENDM
-
-PAUSE MACRO
-    PUSH AX
-    PUSH DX
-    LEA DX,PKEY    ;<=>MOV DX, OFFSET PKEY;GIVES THE OFFSET OF PKEY TO DX
-    MOV AH,9
-    INT 21H        ;OUTPUT STRING AT DS:DX   
-    MOV AH,8       ;WAIT FOR PRESSING OF A KEY
-    INT 21H        ;WITHOUT ECHO->8
-    PRINT 0AH
-    PRINT 0DH
-    POP DX
-    POP AX
-ENDM
-
 EXIT MACRO
     MOV AH,4CH
     INT 21H
 ENDM
-
-GETHON MACRO R
-    CALL GETHEX
-    MOV R,AX
-    CALL GETHEX
-    SHL R,4
-    OR R,AX
-    CALL GETHEX
-    SHL R,4
-    OR R,AX
-    CALL GETHEX
-    SHL R,4
-    OR R,AX
-ENDM 
