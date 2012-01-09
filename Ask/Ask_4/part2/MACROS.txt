@@ -22,23 +22,60 @@ PRINT MACRO CHAR
 ENDM
 
 
-; This will use INT 10/02H
-; to move the cursor 
-; to the appropriate position
-PRINT_ECHO MACRO CHAR
+MOVE_THERE MACRO LINE COL
     PUSH AX
+    PUSH BX
     PUSH DX
     MOV AH,02H
-    MOV BP,OFFSET ECHO_LINE
+    MOV BP,OFFSET LINE
     MOV DH,DS:[BP]
-    MOV BP,OFFSET ECHO_COL
+    MOV BP,OFFSET COL
     MOV DL,DS:[BP]
     MOV BH,0H
     INT 10H
+    POP DX
+    POP BX
+    POP AX
+ENDM
+
+
+INCREASE_LINE MACRO LINE COLUMN MINC MAXL
+; === Zero Column ===
+    MOV BP,OFFSET COLUMN
+    MOV DS:[BP],MINC
+; === Increase Line ===    
+    MOV BP,OFFSET LINE
+    INC DS:[BP]
+    
+ENDM
+
+SCROLL_UP MACRO LINES UPLR UPLC LORR LORC
+    MOV AL,LINES
+    MOV CH,UPLR
+    MOV CL,UPLC
+    MOV DH,LORR
+    MOV DL,LORC
+    MOV AH,06H
+    INT 10H
+ENDM
+    
+CLEAR MACRO
+    XOR CX,CX
+    MOV DH,24
+    MOV DL,80
+    MOV BH,7
+    MOV AX,700H
+    INT 10H
+ENDM
+
+; This will use INT 10/02H
+; to move the cursor 
+; to the appropriate position
+PRINT_THERE MACRO CHAR
+    PUSH AX
     MOV AL,CHAR
     MOV AH,0EH
     INT 10H
-    POP DX
     POP AX
 ENDM
 
