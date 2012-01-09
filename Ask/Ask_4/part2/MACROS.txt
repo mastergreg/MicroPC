@@ -22,36 +22,44 @@ PRINT MACRO CHAR
 ENDM
 
 
+; This will use INT 10/02H
+; to move the cursor 
+; to the appropriate position
 PRINT_ECHO MACRO CHAR
     PUSH AX
-    PUSH BX
     PUSH DX
     MOV AH,02H
-    MOV DH,DS:[OFFSET ECHO_LINE]
-    MOV DL,DS:[OFFSET ECHO_COL]
+    MOV BP,OFFSET ECHO_LINE
+    MOV DH,DS:[BP]
+    MOV BP,OFFSET ECHO_COL
+    MOV DL,DS:[BP]
     MOV BH,0H
     INT 10H
-    POP AX
-    POP BX
+    MOV AL,CHAR
+    MOV AH,0EH
+    INT 10H
     POP DX
-    INC DS:[OFFSET ECHO_COL]
-    PRINT CHAR
+    POP AX
 ENDM
 
+; This will use INT 10/02H
+; to move the cursor 
+; to the appropriate position
 PRINT_MSG MACRO CHAR
     PUSH AX
-    PUSH BX
     PUSH DX
     MOV AH,02H
-    MOV DH,DS:[OFFSET MSG_LINE]
-    MOV DL,DS:[OFFSET MSG_COL]
+    MOV BP,OFFSET MSG_LINE
+    MOV DH,DS:[BP]
+    MOV BP,OFFSET MSG_COL
+    MOV DL,DS:[BP]
     MOV BH,0H
     INT 10H
-    POP AX
-    POP BX
+    MOV AL,CHAR
+    MOV AH,0EH
+    INT 10H
     POP DX
-    INC DS:[OFFSET MSG_COL]
-    PRINT CHAR
+    POP AX
 ENDM
 
 ;This macro uses registers AH,DX
