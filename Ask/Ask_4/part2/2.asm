@@ -1,33 +1,29 @@
 INCLUDE MACROS.TXT
 
-DATA SEGMENT
+CODE SEGMENT
+    ASSUME CS:CODE,DS:CODE,ES:CODE
+    ORG 100H
+
+MAIN PROC FAR
     ECHO_LINE DW 0
     ECHO_COL  DW 0
     MSG_LINE  DW 0
-    MSG_COL   DW 40
-ENDS
+    MSG_COL   DW 41
 
-STACK SEGMENT
-    DW   128  DUP(?)
-ENDS
-
-CODE SEGMENT
-
-MAIN PROC FAR
-; SET SEGMENT REGISTERS:
-    MOV AX, DATA
-    MOV DS, AX
-    MOV ES, AX
 
 START:
     CLEAR
     MOVE_THERE ECHO_LINE ECHO_COL
+    ;[ this is just for testing
+    MOV AL,3H
+    ;] this is just for testing
     CALL OPEN_RS232
 
 READ_RS232:
     CALL RXCH_RS232
-    CMP AL,0
-    JE NOCHAR
+    ;CMP AL,0
+    ;; testing
+    ;JE NOCHAR
     MOV BL,AL
 ; === PRINT THE MESSAGE ===
     CMP BL,0DH
@@ -40,16 +36,17 @@ READ_RS232:
     CMP BL,80
     JNE NOINCMLINE
 INCMLINE:
-    INCREASE_LINE MSG_LINE MSG_COL 41 23
+    INCREASE_LINE MSG_LINE MSG_COL 41
     MOVE_THERE MSG_LINE MSG_COL
 ; === This should scroll up when needed ===
-    MOV BP,OFFSET ECHO_LINE
+    MOV BP,OFFSET MSG_LINE
     MOV BL,DS:[BP]
     CMP BL,22
-    JNE READ_RS232
+; === compare with 22 [lines in dosbox] ===
+    JNE NOCHAR
     SUB BL,1
     MOV DS:[BP],BL
-    SCROLL_UP 1 0 41 23 80
+    SCROLL_UP 1 0 41 23 79
     JMP NOCHAR
 
 NOINCMLINE:
@@ -73,12 +70,13 @@ NOCHAR:
     CMP BL,40
     JNE NOINCELINE
 INCELINE:
-    INCREASE_LINE ECHO_LINE ECHO_COL 0 23
+    INCREASE_LINE ECHO_LINE ECHO_COL 0
     MOVE_THERE ECHO_LINE ECHO_COL
 ; === This should scroll up when needed ===
     MOV BP,OFFSET ECHO_LINE
     MOV BL,DS:[BP]
     CMP BL,22
+; === compare with 22 [lines in dosbox] ===
     JNE READ_RS232
     SUB BL,1
     MOV DS:[BP],BL
