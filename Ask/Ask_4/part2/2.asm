@@ -13,17 +13,17 @@ MAIN PROC FAR
 
 START:
     CLEAR
+    CALL SCREEN_SPLIT
     MOVE_THERE ECHO_LINE ECHO_COL
     ;[ this is just for testing
-    MOV AL,3H
-    ;] this is just for testing
+    MOV AL,0E3H
+    ; this is just for testing
     CALL OPEN_RS232
 
 READ_RS232:
     CALL RXCH_RS232
-    ;CMP AL,0
-    ;; testing
-    ;JE NOCHAR
+    CMP AL,0
+    JE NOCHAR
     MOV BL,AL
 ; === PRINT THE MESSAGE ===
     CMP BL,0DH
@@ -95,6 +95,18 @@ QUIT:
 MAIN ENDP
 
          
+SCREEN_SPLIT PROC NEAR		
+	MOV CX, 24  ; 24 fores na trexei to loop
+
+LOOP1:
+	MOVE_THERE_CX 40 ; paei sthn i grammh kai sthlh panta thn 40 kai tupwnei'|'
+	PRINT_THERE 179
+    LOOP LOOP1
+	MOVE_THERE_CX 40 ; paei sthn i grammh kai sthlh panta thn 40 kai tupwnei'|'
+	PRINT_THERE 179
+    RET
+
+SCREEN_SPLIT ENDP
 ;==== INITIALIZE RS232 PORT ====
 OPEN_RS232 PROC NEAR
     JMP BEGIN
