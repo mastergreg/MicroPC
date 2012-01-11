@@ -12,56 +12,61 @@ MAIN PROC FAR
 
 
 START:
-    CLEAR
-    CALL SCREEN_SPLIT
-    MOVE_THERE ECHO_LINE ECHO_COL
-    ;[ this is just for testing
-    MOV AL,0E3H
-    ; this is just for testing
+    CLEAR                           ; clear the screen
+    CALL SCREEN_SPLIT               ; print the line in the middle
+    MOVE_THERE ECHO_LINE ECHO_COL   ; move to echo line column
+    ;[ THIS IS JUST FOR TESTING
+    MOV AL,0E3H                     ; initialize AL  
+    ; THIS IS JUST FOR TESTING
     CALL OPEN_RS232
 
 READ_RS232:
-    CALL RXCH_RS232
-    CMP AL,0
-    JE NOCHAR
-    MOV BL,AL
+    CALL RXCH_RS232                 ; read com
+    CMP AL,0                        ; if there is nothing there
+    JE NOCHAR                       ; check keyboard
+    MOV BL,AL                       ; move it to BL for printing
 ; === PRINT THE MESSAGE ===
-    CMP BL,0DH
+    CMP BL,0DH                      
     JE INCMLINE
-    MOVE_THERE MSG_LINE MSG_COL
-    PRINT_THERE BL
-    MOV BP,OFFSET MSG_COL
-    MOV BL,DS:[BP]
-    INC BL
-    CMP BL,80
-    JNE NOINCMLINE
+; === IF GIVEN ENTER SHOULD INC LINE ===
+    MOVE_THERE MSG_LINE MSG_COL     ; move cursor to appropriate line col
+    PRINT_THERE BL                  ; ok print it
+    MOV BP,OFFSET MSG_COL           ; and increase
+    MOV BL,DS:[BP]                  ; the column
+    INC BL                          ; if it reaches 80
+    CMP BL,80                       ; it should be reset to 41
+    JNE NOINCMLINE                  
 INCMLINE:
-    INCREASE_LINE MSG_LINE MSG_COL 41
-    MOVE_THERE MSG_LINE MSG_COL
-; === This should scroll up when needed ===
+    INCREASE_LINE MSG_LINE MSG_COL 41       ; increase line and save new line/column
+    MOVE_THERE MSG_LINE MSG_COL             ; and move the cursor there
+; === THIS SHOULD SCROLL UP WHEN NEEDED ===
     MOV BP,OFFSET MSG_LINE
     MOV BL,DS:[BP]
     CMP BL,22
-; === compare with 22 [lines in dosbox] ===
-    JNE NOCHAR
-    SUB BL,1
+; === COMPARE WITH 22 [LINES IN DOSBOX] ===
+    JNE NOCHAR                              
+    SUB BL,1                                ; 
     MOV DS:[BP],BL
-    SCROLL_UP 1 0 41 23 79
-    JMP NOCHAR
-
+    SCROLL_UP 1 0 41 23 79                  
+    JMP NOCHAR                              ; if you don't need to scroll
+                                            ; then check the keyboard
 NOINCMLINE:
-    MOV DS:[BP],BL
+    MOV DS:[BP],BL                  ; store the column (no line increase no scroll)
     
     
 NOCHAR:
     READNB
+; === no char then read com ===
     JZ READ_RS232
     MOV BL,AL
 ; === PRINT ECHO ===
     CMP BL,27
+; === compare with escape ===
     JE QUIT
+    CALL TXCH_RS232
     CMP BL,0DH
     JE  INCELINE
+; === IF GIVEN ENTER SHOULD INC LINE ===
     MOVE_THERE ECHO_LINE ECHO_COL
     PRINT_THERE BL
     MOV BP,OFFSET ECHO_COL
@@ -72,11 +77,11 @@ NOCHAR:
 INCELINE:
     INCREASE_LINE ECHO_LINE ECHO_COL 0
     MOVE_THERE ECHO_LINE ECHO_COL
-; === This should scroll up when needed ===
+; === THIS SHOULD SCROLL UP WHEN NEEDED ===
     MOV BP,OFFSET ECHO_LINE
     MOV BL,DS:[BP]
     CMP BL,22
-; === compare with 22 [lines in dosbox] ===
+; === COMPARE WITH 22 [LINES IN DOSBOX] ===
     JNE READ_RS232
     SUB BL,1
     MOV DS:[BP],BL
@@ -96,13 +101,13 @@ MAIN ENDP
 
          
 SCREEN_SPLIT PROC NEAR		
-	MOV CX, 24  ; 24 fores na trexei to loop
+	MOV CX, 24  ; 24 FORES NA TREXEI TO LOOP
 
 LOOP1:
-	MOVE_THERE_CX 40 ; paei sthn i grammh kai sthlh panta thn 40 kai tupwnei'|'
+	MOVE_THERE_CX 40 ; PAEI STHN I GRAMMH KAI STHLH PANTA THN 40 KAI TUPWNEI'|'
 	PRINT_THERE 179
     LOOP LOOP1
-	MOVE_THERE_CX 40 ; paei sthn i grammh kai sthlh panta thn 40 kai tupwnei'|'
+	MOVE_THERE_CX 40 ; PAEI STHN I GRAMMH KAI STHLH PANTA THN 40 KAI TUPWNEI'|'
 	PRINT_THERE 179
     RET
 
@@ -122,7 +127,7 @@ BAUD_RATE LABEL WORD
 BEGIN:
     STI
     MOV AH,AL
-    MOV DX,3FBH
+    MOV DX,03FBH
     MOV AL,80H
     OUT DX,AL
 
@@ -132,19 +137,19 @@ BEGIN:
     AND DX,0EH
     MOV DI,OFFSET BAUD_RATE
     ADD DI,DX
-    MOV DX,3F9H
+    MOV DX,03F9H
     MOV AL,CS:[DI]+1
     OUT DX,AL
 
-    MOV DX,3F8H
-    MOv AL,CS:[DI]
+    MOV DX,03F8H
+    MOV AL,CS:[DI]
     OUT DX,AL
 
-    MOV DX,3FBH
+    MOV DX,03FBH
     MOV AL,AH
     AND AL,01FH
     OUT DX,AL
-    MOV DX,3F9H
+    MOV DX,03F9H
     MOV AL,0H
     OUT DX,AL
     RET
@@ -170,11 +175,11 @@ RXCH_RS232 ENDP
 ;==== WRITE 1 CHAR TO RS232 PORT ====
 TXCH_RS232 PROC NEAR
     PUSH AX
-    MOV DX,3FDH
+    MOV DX,03FDH
 
 TXCH_RS232_2:
     IN AL,DX
-    TEST AL,20H
+    TEST AL,020H
     JZ TXCH_RS232_2
 
     SUB DX,5
