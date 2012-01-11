@@ -16,39 +16,36 @@ MAIN PROC FAR
 
 
 START:
-    CLEAR                           ; clear the screen
+    CLEAR                           ; CLEAR THE SCREEN
     PRINT_STRING MESSAGE1
     CALL READ_ECHO
     PRINT_STRING NEW_LINE
     PRINT_STRING MESSAGE2
-    CALL READ_BR ;Baut Rate
+    CALL READ_BR ;BAUT RATE
     CALL OPEN_RS232
-    CLEAR                           ; clear the screen
-    CALL SCREEN_SPLIT               ; print the line in the middle
-    MOVE_THERE ECHO_LINE ECHO_COL   ; move to echo line column
-    ;[ THIS IS JUST FOR TESTING
-    MOV AL,0E3H                     ; initialize AL  
-    ; THIS IS JUST FOR TESTING
+    CLEAR                           ; CLEAR THE SCREEN
+    CALL SCREEN_SPLIT               ; PRINT THE LINE IN THE MIDDLE
+    MOVE_THERE ECHO_LINE ECHO_COL   ; MOVE TO ECHO LINE COLUMN
 
 READ_RS232:
-    CALL RXCH_RS232                 ; read com
-    CMP AL,0                        ; if there is nothing there
-    JE NOCHAR                       ; check keyboard
-    MOV BL,AL                       ; move it to BL for printing
+    CALL RXCH_RS232                 ; READ COM
+    CMP AL,0                        ; IF THERE IS NOTHING THERE
+    JE NOCHAR                       ; CHECK KEYBOARD
+    MOV BL,AL                       ; MOVE IT TO BL FOR PRINTING
 ; === PRINT THE MESSAGE ===
     CMP BL,0DH                      
     JE INCMLINE
 ; === IF GIVEN ENTER SHOULD INC LINE ===
-    MOVE_THERE MSG_LINE MSG_COL     ; move cursor to appropriate line col
-    PRINT_THERE BL                  ; ok print it
-    MOV BP,OFFSET MSG_COL           ; and increase
-    MOV BL,DS:[BP]                  ; the column
-    INC BL                          ; if it reaches 80
-    CMP BL,80                       ; it should be reset to 41
+    MOVE_THERE MSG_LINE MSG_COL     ; MOVE CURSOR TO APPROPRIATE LINE COL
+    PRINT_THERE BL                  ; OK PRINT IT
+    MOV BP,OFFSET MSG_COL           ; AND INCREASE
+    MOV BL,DS:[BP]                  ; THE COLUMN
+    INC BL                          ; IF IT REACHES 80
+    CMP BL,80                       ; IT SHOULD BE RESET TO 41
     JNE NOINCMLINE                  
 INCMLINE:
-    INCREASE_LINE MSG_LINE MSG_COL 41       ; increase line and save new line/column
-    MOVE_THERE MSG_LINE MSG_COL             ; and move the cursor there
+    INCREASE_LINE MSG_LINE MSG_COL 41       ; INCREASE LINE AND SAVE NEW LINE/COLUMN
+    MOVE_THERE MSG_LINE MSG_COL             ; AND MOVE THE CURSOR THERE
 ; === THIS SHOULD SCROLL UP WHEN NEEDED ===
     MOV BP,OFFSET MSG_LINE
     MOV BL,DS:[BP]
@@ -58,22 +55,29 @@ INCMLINE:
     SUB BL,1                                ; 
     MOV DS:[BP],BL
     SCROLL_UP 1 0 41 23 79                  
-    JMP NOCHAR                              ; if you don't need to scroll
-                                            ; then check the keyboard
+    JMP NOCHAR                              ; IF YOU DON'T NEED TO SCROLL
+                                            ; THEN CHECK THE KEYBOARD
 NOINCMLINE:
-    MOV DS:[BP],BL                  ; store the column (no line increase no scroll)
+    MOV DS:[BP],BL                  ; STORE THE COLUMN (NO LINE INCREASE NO SCROLL)
     
     
 NOCHAR:
     READNB
-; === no char then read com ===
+; === NO CHAR THEN READ COM ===
     JZ READ_RS232
     MOV BL,AL
 ; === PRINT ECHO ===
     CMP BL,27
-; === compare with escape ===
+; === COMPARE WITH ESCAPE ===
     JE QUIT
+    CMP BL,8
+; === COMPARE WITH BACKSPACE ===
+    JE READ_RS232
     CALL TXCH_RS232
+; === SHOULD I ECHO R SHOULD I NOT? ===
+    MOV BP,OFFSET ECHO
+    CMP DS:[BP],1
+    JNE READ_RS232
     CMP BL,0DH
     JE  INCELINE
 ; === IF GIVEN ENTER SHOULD INC LINE ===
@@ -141,10 +145,10 @@ LOOP_E:
     JMP LOOP_E
 
 ECHO_ON:
-    MOV DS:[OFFSET ECHO],1
+    MOV BP,OFFSET ECHO
+    MOV DS:[BP],1
     RET
 ECHO_OFF:
-    MOV DS:[OFFSET ECHO],0
     RET
 
 READ_ECHO ENDP
