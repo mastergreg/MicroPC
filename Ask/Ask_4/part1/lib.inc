@@ -98,7 +98,7 @@ DEFINE_PRINT_HEX MACRO
     JMP ADR2
 
 ADDR:
-    ADD AH, 37h     ; DIAFORETIKA PROS8ETW 37H ('a' = 41H)
+    ADD AH, 37h     ; DIAFORETIKA PROS8ETW 37H ('A' = 41H)
 ADR2:
     PRINT AH
     POP DX
@@ -218,7 +218,7 @@ PSIFIA_2:
     JMP SYNEX       ; 2 PSIFIA -> AX
 
 PSIFIA_3:
-    POP AX          ; 3O-2O (2 LSB BITS)
+    POP AX          ; 3o-2o (2 LSB BITS)
     MOV BL,AL
     POP AX
     MOV AH,AL
@@ -227,7 +227,7 @@ PSIFIA_3:
     MOV DX,AX
     
     POP AX
-    MOV AH,30H      ; 1O PSIFIO   
+    MOV AH,30H      ; 1o PSIFIO   
     CALL NUMBER
     MOV AH,AL       ; POL/ZOYME EPI 16^2= 2^8 TO MSB BIT <=> PHGAINEI STON MSB KATAXWRHTH
     MOV AL,DL     
@@ -237,14 +237,14 @@ PSIFIA_4:
     POP AX
     MOV CL,AL
     POP AX
-    MOV AH,AL       ; 2O LSB BIT P ANASYROYME AP' TH STOIVA        
+    MOV AH,AL       ; 2o LSB BIT P ANASYROYME AP' TH STOIVA        
     MOV AL,CL     
     CALL NUMBER
-    MOV DX,AX       ; 4O-3O PSIFIO STON DX
+    MOV DX,AX       ; 4o-3o PSIFIO STON DX
     
     POP AX
     MOV CL,AL
-    POP AX          ; 2O-1O BIT
+    POP AX          ; 2o-1o BIT
     MOV AH,AL
     MOV AL,CL
     CALL NUMBER
@@ -252,8 +252,8 @@ PSIFIA_4:
     MOV AL,DL       ; SAN POL/SMOS EPI 256 TA 2 MSB PSIFIA 
                     ; 4 PSIFIA ->AX  
     
-SYNEX:              ; 2OS ARI8MOS      
-    PUSH AX         ; APO8IKEYSH 1OU ARI8MOY STH STOIVA
+SYNEX:              ; 2os ARI8MOS      
+    PUSH AX         ; APO8IKEYSH 1ou ARI8MOY STH STOIVA
     
     MOV BX,0        ; MHDENISMOS METRHTH PSIFIWN
 IGNORE1:
@@ -287,7 +287,7 @@ CONT3:
     JMP IGNORE1    
     
 CONT4:              
-; IDIA DIADIKASIA GIA NA "FTIAXOYME" TO 2O ARI8MO
+; IDIA DIADIKASIA GIA NA "FTIAXOYME" TO 2o ARI8MO
     CMP BL,00H
     JE QUIT
     CMP BL,1
@@ -316,7 +316,7 @@ PSIFIA2_2:
     JMP TELOS       ; 2 PSIFIA ->AX
 
 PSIFIA3_2:
-    POP AX          ; 3O-2O
+    POP AX          ; 3o-2o
     MOV BL,AL
     POP AX
     MOV AH,AL
@@ -325,10 +325,10 @@ PSIFIA3_2:
     MOV DX,AX
     
     POP AX
-    MOV AH,30H      ; 1O PSIFIO   
+    MOV AH,30H      ; 1o PSIFIO   
     CALL NUMBER
     MOV AH,AL
-    MOV AL,DL       ; POL/ZOYME EPI 256 TO 1O PSIFIO
+    MOV AL,DL       ; POL/ZOYME EPI 256 TO 1o PSIFIO
     JMP TELOS       ; 3 PSIFIA ->AX
     
 PSIFIA4_2:    
@@ -338,12 +338,12 @@ PSIFIA4_2:
     MOV AH,AL        
     MOV AL,CL
     CALL NUMBER
-    MOV DX,AX       ; 4O-3O PSIFIO STON DX
+    MOV DX,AX       ; 4o-3o PSIFIO STON DX
     
     POP AX
     MOV CL,AL
     POP AX
-    MOV AH,AL       ; 1O-2O
+    MOV AH,AL       ; 1o-2o
     MOV AL,CL
     CALL NUMBER
     MOV AH,AL
@@ -351,8 +351,8 @@ PSIFIA4_2:
                     ; 4 PSIFIA ->AX  
                 
 TELOS: 
-    MOV DX,AX       ; 2OS ARI8MOS ->DX
-    POP AX          ; 1OS ARI8MOS ->AX
+    MOV DX,AX       ; 2os ARI8MOS ->DX
+    POP AX          ; 1os ARI8MOS ->AX
 RET
 READ_HEX ENDP
 SKIP_READ_HEX:
