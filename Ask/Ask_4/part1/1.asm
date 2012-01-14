@@ -21,7 +21,7 @@ START:
     MOV ES, AX
 
     MOV PROSTH,0        ; ARXIKOPOIHSH FLAG 
-    CALL READ_HEX       ; 1OS ->AX, 2OS ->DX
+    CALL READ_HEX       ; 1os ->AX, 2os ->DX
      
     PUSH AX
     PUSH DX
