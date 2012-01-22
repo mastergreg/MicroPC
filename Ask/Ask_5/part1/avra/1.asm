@@ -1,4 +1,5 @@
 .include "m16def.inc"
+.org 0
 
 reset: 
 		ldi r24,low(RAMEND)
@@ -11,8 +12,8 @@ reset:
 
 main:
 		out PORTA, r26
-		ldi r24,low(500)
-		ldi r25,high(500)
+		ldi r24,low(1000)
+		ldi r25,high(1000)
 		
 
 		rcall wait_msec
@@ -41,4 +42,3 @@ wait_msec:
 	sbiw r24,1
 	brne wait_msec
 	ret
-		
