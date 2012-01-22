@@ -40,7 +40,6 @@ wait_msec:
 	ldi r24,low(998)
 	ldi r25,high(998)
 	rcall wait_usec
-	
 	pop r25
 	pop r24
 	sbiw r24,1

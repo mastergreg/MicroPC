@@ -6,6 +6,7 @@ CFLAGS=-Os
 
 
 all: 	$(TARGET).hex
+.PHONY: clean
 
 %.elf:	%.s
 	$(CC) $< -o $@
