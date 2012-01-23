@@ -1,0 +1,66 @@
+START:
+IN 10H
+	MVI A,10H	;clean digits
+	STA 0990H
+	STA 0991H
+	STA 0992H
+	STA 0993H
+	STA 0994H
+	STA 0995H
+	LXI D,0990H
+	CALL STDM
+	CALL DCD	;show blank display
+	LXI B,0064H
+	MVI A,D7H	;Green-Red
+	STA 3000H	;show on leds
+	LDA 2000H	;read from dip switches
+	RAL
+	JC CONT		;check MSB
+	CALL DELB	;no busy waits
+	JMP START	
+CONT:
+	MVI A,01H	;Display 10
+	STA 0995H	;
+	MVI L,00H	;
+	CALL MDEL	;Wait for a sec
+
+	MVI A,00H	;load 0 on last
+	STA 0995H	;7segment digit
+	MVI L,09H
+LOOP1:
+	PUSH H		;loop for L in [9,1]
+	CALL MDEL	;Wait for a sec
+	POP H
+	DCR L
+	JNZ LOOP1
+
+
+	MVI A,B7H	;Yellow-Red
+	STA 3000H	;Show on leds
+	LXI B,03E8H	
+	CALL DELB	;Wait for a sec
+	MVI A,7DH	;Red-Green
+	STA 3000H	;Show on leds
+	CALL DELB	;Wait for 3 secs
+	CALL DELB
+	CALL DELB
+	MVI A,7BH	;Red-Yellow
+	STA 3000H	;Show on leds
+	CALL DELB	;Wait for a sec
+	JMP START
+	
+MDEL:
+	MOV A,L		;Load A from L
+	STA 0994H	;Load A to memory
+	LXI D,0990H	;Load address to D for STDM
+	CALL STDM
+	LXI B,0032H	;50ms delays
+	MVI H,14H	;H as counter 20-0
+LP:	
+	CALL DCD	;Refresh Display
+	CALL DELB	;Wait 50ms
+	DCR H		;Continue 20 times
+	JNZ LP		;20x50ms = 1sec
+	RET
+	
+END

@@ -1,24 +1,26 @@
-	MVI A,10H
-	STA 0BB0H
-	STA 0BB1H
-	STA 0BB2H
-	STA 0BB3H
-	STA 0BB4H
-	STA 0BB5H
-	LXI D,0BB0H
-	CALL STDM
-LP:	CALL KIND
-	MOV B,A
-	ANI 0FH
-	STA 0BB4H
-	MOV A,B
-	RLC
-	RLC
-	RLC
-	RLC
-	ANI 0FH
-	STA 0BB5H
-	LXI D,0BB0H
-	CALL STDM
-	JMP LP
+    IN  10H
+    MVI A,10H   ;fortwnoume to 10H
+    STA 0BB0H   ;wste na ka8arisei
+    STA 0BB1H   ;to display
+    STA 0BB2H
+    STA 0BB3H
+    STA 0BB4H
+    STA 0BB5H
+    LXI D,0BB0H
+    CALL STDM
+LP: 
+    CALL KIND   ;h kind 8a ferei ton
+    MOV B,A     ;kwdiko pshfiou ston A
+    ANI 0FH     ;xrhsimopoioume ton B ws buffer
+    STA 0BB4H	;grafoume ta 4LSB sthn 8esh tou pemptou pshfiou
+    MOV A,B
+    RLC         ;me kuklikh olis8ish 4fores 
+    RLC         ;fernoume ta 4MSB sta 4LSB 
+    RLC         ;gia na ta grapsoume sth dieu8unsh
+    RLC         ;tou ektou pshfiou
+    ANI 0FH     
+    STA 0BB5H   
+    LXI D,0BB0H ;dinoume ston DE th 8esh pou 8a
+    CALL STDM   ;xrhsimopoihsei h STDM gia na kanei to refresh
+    JMP LP      ;tou display
 END

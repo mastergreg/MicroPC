@@ -1,0 +1,4 @@
+#!/bin/bash
+dosbox -conf dosbox-0.74._server_conf &
+sleep 3; 
+dosbox -conf dosbox-0.74._client_conf &

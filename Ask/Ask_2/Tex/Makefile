@@ -1,6 +1,6 @@
 TARGET=mlabc07ex2
 all: ${TARGET}.pdf
-${TARGET}.pdf: ${TARGET}.tex title/* 
-		xelatex -shell-escape ${TARGET}.tex
+%.pdf: %.tex title/* files/*
+		xelatex -shell-escape $<
 spell:
 		aspell -l el_gr --ignore-case=true -c ${TARGET}.tex

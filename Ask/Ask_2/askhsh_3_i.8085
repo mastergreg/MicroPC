@@ -1,61 +1,61 @@
-START:	LDA 2000H
-	CALL XOR
-	CALL XOR
-	CALL XOR
-	CALL XOR
-	MOV D,C
-	MOV A,C
-	RAR
-	MOV C,A
-	MOV A,D
-	RAL
-	RAL
-	RAL
-	RAL
-	RAL
-	RAL
-	CALL OR
-	MOV A,C
-	CMA
-	STA 3000H
-	JMP START
+START:  
+    LDA 2000H
+    CALL XOR
+    CALL XOR
+    CALL XOR
+    CALL XOR
+    MOV D,C
+    MOV A,C
+    RAR
+    MOV C,A
+    MOV A,D
+    RAL
+    RAL
+    RAL
+    RAL
+    RAL
+    RAL
+    CALL OR
+    MOV A,C
+    ANI 0FH
+    CMA
+    STA 3000H
+    JMP START
 
+XOR:
+    RAL         ;CALL XOR
+    JC ONE      ;XY
+    RAL         ;0Y
+    JC TRUE     ;0Y
+    JMP FALSE   ;00
+ONE:            ;1Y
+    RAL         ;1Y
+    JC FALSE   	;11
+    JMP TRUE    ;10
 
-;diabazei apo ton A, 
-;xrhsimopoiei ton b ws buffer
-;grafei to apotelesma ston C
-XOR:	RAL	    ;CALL XOR
-	JC ONE      ;XY
-	RAL         ;0Y
-	JC TRUE     ;0Y
-	JMP FALSE   ;00
-ONE:	CMC     ;1Y
-	RAL         ;1Y
-	JC FALSEX   ;11
-	JMP TRUE    ;10
+OR: 
+    RAL         ;CALL OR;XY
+    JC TRUE     ;1Y
+    RAL         ;0Y
+    JC TRUE     ;11
+    JMP FALSE   ;00
 
-OR:	RAL	;CALL OR;XY
-	JC TRUE     ;1Y
-	RAL         ;0Y
-	JC TRUE     ;11
-	JMP FALSE   ;00
-
-TRUE:	CMC
-	MOV B,A     ;USE B AS BUFFER
-	MOV A,C     ;LOAD PREVIOUS OUTCOME FORM C
-	RAL         ;SHIFT A
-	ORI 01H     ;ADD 1 IN THE END
+TRUE:
+    MOV B,A     ;USE B AS BUFFER
+    MOV A,C     ;LOAD PREVIOUS OUTCOME FROM C
+    RAL         ;SHIFT A
+    ORI 01H     ;ADD 1 IN THE END
     JMP RESTORE
 
-FALSEX: CMC
-FALSE:	MOV B,A ;USE B AS BUFFER
-	MOV A,C     ;LOAD PREV FROM C
-	RAL         ;SHIFT A
-	ANI FEH     ;ADD 0 IN THE END
+FALSE:  
+    MOV B,A     ;USE B AS BUFFER
+    MOV A,C     ;LOAD PREV FROM C
+    RAL         ;SHIFT A
+    ANI FEH     ;ADD 0 IN THE END
     JMP RESTORE
 
-RESTORE
-	MOV C,A     ;RESTORE BUFFERS AS THEY WERE
-	MOV A,B
-	RET
+RESTORE:
+    MOV C,A     ;RESTORE BUFFERS AS THEY WERE
+    MOV A,B
+    RET
 END
