@@ -1,6 +1,9 @@
 #include <avr/io.h>
 #define __SFR_OFFSET 0
 
+
+.global main
+main:
 reset: 
     ldi r24,lo8(RAMEND)
     out SPL,r24
@@ -11,8 +14,7 @@ reset:
     clr r26
     clr r27
     out DDRB,r27
-
-main:
+calc:
     out PORTA, r26
 
     ldi r24,lo8(1000)
@@ -22,9 +24,9 @@ main:
     rcall wait_msec
     inc r26
     cpi r26,16
-    brlo main
+    brlo calc
     clr r26
-    rjmp main
+    rjmp calc
 
 
 

@@ -1,19 +1,17 @@
-TARGET=1
+TARGET=part2_2
 CC=avr-gcc
 OBJCOPY=avr-objcopy
 CHIP=atmega16
-CFLAGS=-g
+CFLAGS=-Os -g
 
 
 all: 	$(TARGET).hex
 .PHONY: clean debug
 
-%.elf:	%.o
+%.elf:	%.s
 	$(CC) -mmcu=$(CHIP) $< $(CFLAGS) -o $@
-#%.s:	%.S
-#	$(CC) -S -mmcu=$(CHIP) $< > $@
-%.o:	%.S
-	$(CC) -c -mmcu=$(CHIP) $< $(CFLAGS) -o $@
+%.s:	%.S
+	$(CC) -S -mmcu=$(CHIP) $< > $@
 %.hex: %.elf
 	$(OBJCOPY) -j .text -j .data -O ihex $< $@
 clean:
