@@ -37,7 +37,7 @@ wait_usec:
     ret
 
 wait_msec:
-    in r27,PORTB
+    in r27,PINB
     ror r27
     brcs wait_msec
     push r24
