@@ -1,26 +1,32 @@
-TARGET=1
+TARGET=part1
 CC=avr-gcc
 OBJCOPY=avr-objcopy
 CHIP=atmega16
-CFLAGS=-g
+CFLAGS=-Os -g
+FREQ=16000000
 
 
 all: 	$(TARGET).hex
-.PHONY: clean debug
+.PHONY: clean debug elf hex
 
-%.elf:	%.o
+elf:	$(TARGET).elf
+hex:	$(TARGET).hex
+
+
+%.elf:	%.s
 	$(CC) -mmcu=$(CHIP) $< $(CFLAGS) -o $@
-#%.s:	%.S
-#	$(CC) -S -mmcu=$(CHIP) $< > $@
-%.o:	%.S
-	$(CC) -c -mmcu=$(CHIP) $< $(CFLAGS) -o $@
-%.hex: %.elf
+%.s:	%.S
+	$(CC) -S -mmcu=$(CHIP) $< > $@
+%.s:	%.c
+	$(CC) -S -mmcu=$(CHIP) $< > $@
+%.hex: 	%.elf
 	$(OBJCOPY) -j .text -j .data -O ihex $< $@
 clean:
 	rm $(TARGET).{elf,s,hex}
 
 debug:	sim
 	ddd --debugger avr-gdb
-
 sim:
-	simulavr -d $(CHIP) -g -p5123
+	simulavr -d $(CHIP) -F $(FREQ) -g -p5123
+flash:	hex
+	avrprog2 -m $(CHIP) -f $(FREQ) --flash w:$(TARGET).hex

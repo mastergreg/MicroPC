@@ -8,6 +8,7 @@
  ;.INCLUDE "m16def.inc"
 #include <avr/io.h>
 #define __SFR_OFFSET 0
+
 .global main
 
 main:
@@ -16,74 +17,71 @@ main:
 	ldi r24,hi8(RAMEND)
 	out SPH,r24
 
-	ser r26				;arxikopoihsh ths PORTA ; ser = set register
+	ser r26			;arxikopoihsh ths PORTA ; ser = set register
 	out DDRA, r26		;gia eksodo
+	;arxikopoihsh gia eisodo:
+	clr r25			;bazw mhdenika gia na exoume eisodo s ola ta bits
+	out DDRB, r25		;giati 8elw apo ta B switches
 
 flash:
-	rcall on			;anapse ta LEDS
-	rcall read_delay_A  ;diabazw delay gia anamma
+	in r28, PINB		;diabazei kia ta grafei ston r28
+	
+	rcall on		;anapse ta LEDS
+	rcall delay1  		;diabazw delay gia anamma
 	rcall wait_msec
 
 
-	rcall off			;sbhse ta LEDS
-	rcall read_delay_S	;diabazw delay gia sbhsimo
+	rcall off		;sbhse ta LEDS
+	rcall delay2		;diabazw delay gia sbhsimo
 	rcall wait_msec
 
-	rjmp flash			; do it again
+	rjmp flash		; do it again
 
 
 ;Yporoutina gia na anaboun ta leds
 
-on: ser r26				;8ese thn 8ura eksodou twn LED
+on: ser r26			;8ese thn 8ura eksodou twn LED
 	out PORTA, r26
-	ret					;gurise sto kurio programma
+	ret			;gurise sto kurio programma
 
 ;Yporoutina gia na sbhnoun ta leds
 
 off: clr r26			;mhdenise thn 8ura eksodou twn LED
 	 out PORTA, r26
-	 ret				;gurise sto kuriws programma
+	 ret			;gurise sto kuriws programma
 
-;===================== read_delay_A gia anamma================================
-
-read_delay_A:
-	clr r25				;bazw mhdenika gia na exoume eisodo s ola ta bits
-	out DDRB, r25		;giati 8elw apo ta B switches
-	in r24, PINB		;diabazei kia ta grafei ston r24
-
-	andi r24,0x0F		;gia na parw ta lsbs
+;===================== delay1 gia anamma================================
 
 delay1:
-	ldi r23, 01			;gia na pros8esw 1
+	ldi r24, 0x0F
+	and r24, r28     	;gia na parw ta lsbs
+	ldi r23, 01		;gia na pros8esw 1
 	add r24, r23
-	ldi r23, 0x64			;gia na pollaplasiasw epi 100
+	ldi r23, 0x64		;gia na pollaplasiasw epi 100
 	mul r24, r23		;kanw ton pollaplasiasmo k exw etoimh thn ka8usterhsh
 						;ston diplo r0:r1
-	mov r25, r1			;metaferw ta msbs ston r25 gia na ta parei wait_msec
-	mov r24, r0			;metaferw ta lsbs ston r24 gia na ta parei wait_msec
+	mov r25, r1		;metaferw ta msbs ston r25 gia na ta parei wait_msec
+	mov r24, r0		;metaferw ta lsbs ston r24 gia na ta parei wait_msec
 
 	ret
 
-;===================== read_delay_S gia sbhsimo================================
-read_delay_S:
-	clr r25				;bazw mhdenika gia na exoume eisodo s ola ta bits
-	out DDRB, r25		;giati 8elw apo ta B switches
-	in r24, PINB		;diabazei kia ta grafei ston r24
-
-delay_sbhsimo:
-	andi r24, 0xF0		;gia na parw ta msbs
-	lsr r24				;4 shift pros ta aristera gia na pane stis swstes 8eseis
-	lsr r24
-	lsr r24
-	lsr r24
+;=====================delay2 gia sbhsimo================================
 
 delay2:
+	ldi r24, 0xF0
+	and r24, r28		;gia na parw ta msbs
+	lsr r24			;4 shift pros ta aristera gia na pane stis swstes 8eseis
+	lsr r24
+	lsr r24
+	lsr r24
+
+
 	ldi r23, 0x01		;gia na pros8esw 1
 	add r24, r23
-	ldi r23, 64			;gia na pollaplasiasw epi 100
+	ldi r23, 0x64		;gia na pollaplasiasw epi 100
 	mul r24, r23		;kanw ton pollaplasiasmo k exw etoimh thn ka8usterhsh ston diplo r0:r1
-	mov r25, r1			;metaferw ta msbs ston r25 gia na ta parei wait_msec
-	mov r24, r0			;metaferw ta lsbs ston r24 gia na ta parei wait_msec
+	mov r25, r1		;metaferw ta msbs ston r25 gia na ta parei wait_msec
+	mov r24, r0		;metaferw ta lsbs ston r24 gia na ta parei wait_msec
 
 	ret
 
