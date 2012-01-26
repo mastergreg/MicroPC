@@ -1,0 +1,51 @@
+\documentclass[a4paper,10pt]{article} \usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+%\textwidth 6.0in \textheight = 664pt
+\usepackage{xltxtra}
+\usepackage{xunicode} \usepackage{graphicx}
+\usepackage{color} \usepackage{xgreek} \usepackage{fancyvrb}
+\usepackage{minted}
+\usepackage{listings}
+\usepackage{enumitem} \usepackage{framed} \usepackage{relsize}
+\usepackage{float} 
+\setmainfont[Mapping=tex-text]{CMU Serif}
+\begin{document}
+
+\include{title/title}
+
+\section*{} 
+\subsection*{Άσκηση (i)}
+
+
+\noindent Κυρίως κώδικας:
+\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part1.S}
+\subsection*{Άσκηση (ii)}
+
+Σε αυτό το μέρος ο σκοπός μας είναι να αναβοσβήνουν τα leds ΡΑ0 έως PA7 αλλά
+με συγκεκριμένη καθυστέρηση, την οποία δίνει ο χρήστης μέσω των dip switches B
+του AVR. Για τον σκοπό αυτό με την ρουτίνα read\_delay\_A διαβάζουμε και
+παίρνουμε τα 4 least significant bits και έπειτα προσθέτουμε 1 και και
+πολλαπλασιάζουμε επί 100 κατά την δοθείσα σχέση $Delay = (1+x) * 100$. Για να
+διαβάσουμε την καθυστέρηση για το σβήσιμο διαβάζουμε όπως πριν μόνο που
+κάνουμε shift τέσσερις θέσεις αριστερά ώστε να απομονώσουμε τα επιθυμητά bits
+και να εφαρμόσουμε την ίδια σχέση. Η κλήση για τις καθυστερήσεις είναι φυσικά
+στο κυρίο πρόγραμμα, αμέσως μετά την κλήση για άναμμα ή σβήσιμο αντίστοιχα.
+\noindent Κυρίως κώδικας:
+\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part2.S}
+\subsection*{Άσκηση (iii)}
+
+Ζητείται να γράψουμε ένα πρόγραμμα σε C που να ανάβει το led0 που είναι
+συνδεδεμένο στο bit0 της θύρας εξόδου PORTB το οποίο να μετακινείται κατάλληλα
+ανάλογα με τα push buttons που πατάμε (SW0-4 της PORTD). Μεγαλύτερη
+προτεραιότητα έχουν τα MSB buttons. Γι' αυτό το σκοπό περιμένουμε να γίνει 1
+κάποιο button και στη συνέχεια μπαίνει σε loop μέχρι να γίνει μηδέν. Μετά
+εκτελεί τη μετακίνηση που αντιστοιχεί σε αυτό. Εκτός αν πατηθεί ωστόσο button
+υψηλότερης προτεραιότητας οπότε και πάμε στο αντίστοιχο loop που περιμένουμε
+να γίνει 0. Για τις διάφορες μετακινήσεις κάναμε και τις απαραίτητες
+διορθώσεις στην τιμή του led, ώστε να δείχνει την τιμή που περιμένουμε μετά
+τις διάφορες ολισθήσεις.
+
+\noindent Κυρίως κώδικας:
+\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part3.c}
+
+\end{document}
