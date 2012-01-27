@@ -2,7 +2,8 @@ TARGET=part3
 CC=avr-gcc
 OBJCOPY=avr-objcopy
 CHIP=atmega16
-CFLAGS=-Os -g
+CFLAGS=-Os -g 
+ASFLAGS=-x assembler-with-cpp 
 FREQ=16000000
 
 
@@ -16,9 +17,9 @@ hex:	$(TARGET).hex
 %.elf:	%.s
 	$(CC) -mmcu=$(CHIP) $< $(CFLAGS) -o $@
 %.s:	%.S
-	$(CC) -S -mmcu=$(CHIP) $< > $@
+	$(CC) -S -mmcu=$(CHIP) $(ASFLAGS) $< > $@
 %.s:	%.c
-	$(CC) -S -mmcu=$(CHIP) $< > $@
+	$(CC) -S -mmcu=$(CHIP) $(ASFLAGS) $< > $@
 %.hex: 	%.elf
 	$(OBJCOPY) -j .text -j .data -O ihex $< $@
 clean:
