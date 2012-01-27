@@ -4,7 +4,7 @@ OBJCOPY=avr-objcopy
 CHIP=atmega16
 CFLAGS=-Os -g 
 ASFLAGS=-x assembler-with-cpp 
-FREQ=16000000
+FREQ=8000000
 
 
 all: 	$(TARGET).hex

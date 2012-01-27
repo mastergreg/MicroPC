@@ -2,12 +2,10 @@
 #include <avr/common.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
-#define TCNT1L 0x10
-#define TCNT1H 0x10
 
 
 .org OVF1addr
-rjmp TIMER1_OVF
+rjmp TIM1_OVF
 
 .global main
 main:
@@ -20,9 +18,9 @@ reset:
     out DDRA,r24
     #set A1 for output
     #and A0 for input
-    ldi r24,(1<<TOIEI)
+    ldi r24,(1 << 2)
     out TIMSK,r24
-    ldi r24,(1<<CS12)|(0<<CS11)|(1<<CS10)
+    ldi r24,(1 << CS12)|(0<<CS11)|(1<<CS10)
     out TCCR1B,r24
     ldi r24,(1 << ISC01) | (1 << ISC00)
     out MCUCR,r24
@@ -40,7 +38,7 @@ ISR0:
     rcall led_on
     ret
 
-TIMER1_OVF:
+TIM1_OVF:
     rcall led_off
     ret
 
@@ -62,9 +60,9 @@ deb_loop:
 set_timer:
     push r24
     ldi r24,0xa4
-    ldi TCNT1H,r24
+    sts TCNT1H,r24
     ldi r24,0x72
-    ldi TCNT1L,r24
+    sts TCNT1L,r24
     ret
 
 led_on:
