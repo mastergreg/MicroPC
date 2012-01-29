@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #define __SFR_OFFSET 0
 
-
 .global main
 main:
 reset: 
@@ -26,9 +25,7 @@ calc:
     breq up_lim
     cpi r26,1
     breq down_lim
-
     rjmp next
-
 
 up_lim:
     ldi r28,1
@@ -37,13 +34,10 @@ down_lim:
     ldi r28,0
     rjmp next
     
-
-
 next:
     cpi r28,0
     breq left
     rjmp right
-
 right:
     ror r26
     rjmp calc
@@ -51,9 +45,6 @@ left:
     rol r26
     rjmp calc
     
-
-
-
 wait_usec:
     sbiw r24,1
     nop
@@ -69,7 +60,6 @@ wait_msec:
     ldi r24,lo8(998)
     ldi r25,hi8(998)
     rcall wait_usec
-
     pop r25
     pop r24
     sbiw r24,1
