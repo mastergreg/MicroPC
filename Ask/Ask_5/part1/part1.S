@@ -14,19 +14,43 @@ reset:
     clr r26
     clr r27
     out DDRB,r27
+    clr r28
+    inc r26
 calc:
     out PORTA, r26
+    ldi r24,lo8(500)
+    ldi r25,hi8(500)
+    rcall wait_msec
 
-    ldi r24,lo8(1000)
-    ldi r25,hi8(1000)
+    cpi r26,128
+    breq up_lim
+    cpi r26,1
+    breq down_lim
+
+    rjmp next
+
+
+up_lim:
+    ldi r28,1
+    rjmp next
+down_lim:
+    ldi r28,0
+    rjmp next
     
 
-    rcall wait_msec
-    inc r26
-    cpi r26,16
-    brlo calc
-    clr r26
+
+next:
+    cpi r28,0
+    breq left
+    rjmp right
+
+right:
+    ror r26
     rjmp calc
+left:
+    rol r26
+    rjmp calc
+    
 
 
 
