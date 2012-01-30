@@ -1,23 +1,27 @@
-#define __SFR_OFFSET 0
-#include <avr/common.h>
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#define __SFR_OFFSET 0
 
 
-.org OVF1addr
-rjmp TIM1_OVF
+.org 0x000
+    rjmp main
+.org 0x002
+    rjmp ISR0
+.org 0x010
+    rjmp TIM1_OVF
+    reti
 
 .global main
 main:
 reset: 
+    ldi r24,hi8(RAMEND)
+    out SPH,r24
     ldi r24,lo8(RAMEND)
     out SPL,r24
-    #ldi r24,hi8(RAMEND)
-    #out SPH,r24
     ldi r24,2
-    out DDRA,r24
     #set A1 for output
     #and A0 for input
+    out DDRA,r24
     ldi r24,(1 << 2)
     out TIMSK,r24
     ldi r24,(1 << CS12)|(0<<CS11)|(1<<CS10)
@@ -36,11 +40,11 @@ ISR0:
     rcall debounce
     rcall set_timer
     rcall led_on
-    ret
+    reti
 
 TIM1_OVF:
     rcall led_off
-    ret
+    reti
 
 debounce:
     push r26
