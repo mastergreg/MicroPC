@@ -42,7 +42,7 @@ loop:
 
 	ldi r24,lo8(100)
 	ldi r25,hi8(100)  ;ka8ysterhsh 100 msec
-	;rcall wait_msec
+	rcall wait_msec
 	inc r26
 	rjmp loop
 

@@ -9,7 +9,12 @@
 #include <avr/interrupt.h>
 #define __SFR_OFFSET 0
 
- .global main
+.global main
+.org 0x000
+    rjmp main
+.org 0x0002
+	rjmp ISR0
+	reti
 
 
 
@@ -23,6 +28,14 @@ main:
 	ser r26
 	out DDRA, r26
 	clr r26
+;=====gia energopoihsh ths INT1 =======
+
+	ldi r24, (1<< ISC01)|(1 << ISC00) ;na prokaleitai me shma 8etikhs akmhs
+	out MCUCR, r24
+	ldi r24, (1<< INT1)
+	out GICR, r24
+	sei
+
 
 loop:
 	out PORTA, r26
@@ -32,14 +45,6 @@ loop:
 	rcall wait_msec
 	inc r26
 	rjmp loop
-
-;=====gia energopoihsh ths INT1 =======
-
-	ldi r24, (1<< ISC01)|(1 << ISC00) ;na prokaleitai me shma 8etikhs akmhs
-	out MCUCR, r24
-	ldi r24, (1<< INT1)
-	out GICR, r24
-	sei
 
 ;====routina eksuphrethshs diakophs=====
 
