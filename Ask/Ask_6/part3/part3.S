@@ -3,15 +3,17 @@
 #define __SFR_OFFSET 0
 
 
+.global main
+
 .org 0x000
     rjmp main
 .org 0x002
     rjmp ISR0
+    reti
 .org 0x010
     rjmp TIM1_OVF
     reti
 
-.global main
 main:
 reset: 
     ldi r24,hi8(RAMEND)
@@ -22,24 +24,43 @@ reset:
     #set A1 for output
     #and A0 for input
     out DDRA,r24
+    ;activate timer1
+    ;2 is TOIE1
+    ;avrStudio doesn't know about it
     ldi r24,(1 << 2)
     out TIMSK,r24
     ldi r24,(1 << CS12)|(0<<CS11)|(1<<CS10)
     out TCCR1B,r24
+    ;activate INT0
     ldi r24,(1 << ISC01) | (1 << ISC00)
     out MCUCR,r24
     ldi r24,(1 << INT0)
     out GICR,r24
     sei
-fun:
 
+fun:
+    ;busy wait
+    ;for interrupt
+    in r26,PINA
+    ror r26
+    brcs ON
     rjmp fun
+ON:
+    rcall set_timer
+    rcall led_on
+    rjmp fun
+   
 
 
 ISR0:
+	push r26 ;swzei to periexomeno tou r26
+	in r26, SREG ;kai SREG
+	push r26
     rcall debounce
     rcall set_timer
     rcall led_on
+    out SREG,r26
+    pop r26
     reti
 
 TIM1_OVF:
@@ -48,6 +69,8 @@ TIM1_OVF:
 
 debounce:
     push r26
+    push r25
+    push r24
 deb_loop:
     ldi r26,(1<<INTF0)
     out GIFR,r26
@@ -59,6 +82,8 @@ deb_loop:
     rcall wait_msec
     brcs deb_loop
     pop r24
+    pop r25
+    pop r26
     ret
 
 set_timer:
@@ -67,6 +92,7 @@ set_timer:
     sts TCNT1H,r24
     ldi r24,0x72
     sts TCNT1L,r24
+    pop r24
     ret
 
 led_on:
