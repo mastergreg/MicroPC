@@ -45,9 +45,9 @@ ON:
 
 
 ISR0:
-	push r26 ;swzei to periexomeno tou r26
-	in r26, SREG ;kai SREG
-	push r26
+    push r26 ;swzei to periexomeno tou r26
+    in r26, SREG ;kai SREG
+    push r26
     rcall debounce
     rcall set_timer
     rcall led_on
