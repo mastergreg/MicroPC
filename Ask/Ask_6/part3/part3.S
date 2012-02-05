@@ -1,3 +1,4 @@
+.include "m16def.inc"
 .org 0x000
     rjmp main
 .org 0x002
@@ -13,8 +14,8 @@ reset:
     ldi r24,low(RAMEND)
     out SPL,r24
     ldi r24,2
-    #set A1 for output
-    #and A0 for input
+    ;#set A1 for output
+    ;#and A0 for input
     out DDRA,r24
     ;activate timer1
     ;2 is TOIE1
