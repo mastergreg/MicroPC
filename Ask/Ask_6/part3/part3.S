@@ -9,7 +9,6 @@
     rjmp main
 .org 0x002
     rjmp ISR0
-    reti
 .org 0x010
     rjmp TIM1_OVF
     reti
@@ -61,6 +60,7 @@ ISR0:
     rcall led_on
     out SREG,r26
     pop r26
+    sei
     reti
 
 TIM1_OVF:
@@ -77,8 +77,8 @@ deb_loop:
     in  r26,GIFR
     rol r26
     rol r26
-    ldi r24,0x5
-    ldi r25,0x0
+    ldi r24,0x05
+    ldi r25,0x00
     rcall wait_msec
     brcs deb_loop
     pop r24

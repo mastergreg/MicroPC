@@ -10,8 +10,8 @@
 #include <avr/interrupt.h>
 #define __SFR_OFFSET 0
 .global main
- .org 0x000
- rjmp main
+.org 0x000
+    rjmp main
 .org 0x0002
 	rjmp ISR0
 	reti
@@ -58,13 +58,15 @@ ISR0:
 
 	ser r26
 	out DDRB,r26   ;exodos h PORTB
+	out DDRC,r26   ;exodos h PORTB
 	
 	inc r23		;auxanoume t metrhth
 
 	out PORTB, r23		;emfanish twn diakopwn
+	out PORTC, r23		;emfanish twn diakopwn
 	ldi r24,lo8(1000)
 	ldi r25,hi8(1000)
-	;rcall wait_msec	;ka8ysterhsh 1 sec
+	rcall wait_msec	;ka8ysterhsh 1 sec
 
 exit:
 	out SREG,r27
