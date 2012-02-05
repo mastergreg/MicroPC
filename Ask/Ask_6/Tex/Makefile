@@ -1,7 +1,8 @@
+CC=xetex
 TARGET=mlabc07ex6
 all: ${TARGET}.pdf
 %.pdf: 	%.tex title/* files/*
-		xelatex -shell-escape $<
+		$(CC) -shell-escape $<
 spell:
 		aspell -l el_gr --ignore-case=true -c ${TARGET}.tex
 clean:
