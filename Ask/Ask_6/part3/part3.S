@@ -1,10 +1,3 @@
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#define __SFR_OFFSET 0
-
-
-.global main
-
 .org 0x000
     rjmp main
 .org 0x002
@@ -15,9 +8,9 @@
 
 main:
 reset: 
-    ldi r24,hi8(RAMEND)
+    ldi r24,high(RAMEND)
     out SPH,r24
-    ldi r24,lo8(RAMEND)
+    ldi r24,low(RAMEND)
     out SPL,r24
     ldi r24,2
     #set A1 for output
@@ -118,8 +111,8 @@ wait_usec:
 wait_msec:
     push r24
     push r25
-    ldi r24,lo8(998)
-    ldi r25,hi8(998)
+    ldi r24,low(998)
+    ldi r25,high(998)
     rcall wait_usec
 
     pop r25

@@ -3,25 +3,24 @@
  *
  *  Created: 31/1/2012 7:58:21 ??
  *   Author: Eleni
+
+
+
+
  */ 
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#define __SFR_OFFSET 0
-
-.global main
-.org 0x000
-    rjmp main
-.org 0x0002
-	rjmp ISR0
+.org 0x00
+	rjmp main
+.org 0x04
+	rjmp ISR1
 	reti
 
 
 
 main:
-	ldi r30,lo8(RAMEND)
+	ldi r30,low(RAMEND)
 	out SPL, r30
-	ldi r30, hi8(RAMEND)
+	ldi r30, high(RAMEND)
 	out SPH, r30
 
 	;programma metrhshs opws dinetai
@@ -30,7 +29,7 @@ main:
 	clr r26
 ;=====gia energopoihsh ths INT1 =======
 
-	ldi r24, (1<< ISC01)|(1 << ISC00) ;na prokaleitai me shma 8etikhs akmhs
+	ldi r24, (1<< ISC11)|(1 << ISC10) ;na prokaleitai me shma 8etikhs akmhs
 	out MCUCR, r24
 	ldi r24, (1<< INT1)
 	out GICR, r24
@@ -39,8 +38,8 @@ main:
 
 loop:
 	out PORTA, r26
-	ldi r24, lo8(100)
-	ldi r25, hi8(100)
+	ldi r24, low(100)
+	ldi r25, high(100)
 
 	rcall wait_msec
 	inc r26
@@ -48,7 +47,7 @@ loop:
 
 ;====routina eksuphrethshs diakophs=====
 
-ISR0:
+ISR1:
 	push r26 ;swzei to periexomeno tou r26
 	in r26, SREG ;kai SREG
 	push r26
@@ -61,42 +60,77 @@ ISR0:
 
 	mov r28, r29 ;mhpws tuxon xreiastei
 	
-	;shift bit0
+bit0:
 	lsr r28
-	brcs plus_one ;an exw carry dhlash asso tote pros8etw ena sto sum dhladh ston register r27
-	;shift bit1
+	brcs plus_one_0 ;an exw carry dhlash asso tote pros8etw ena sto sum dhladh ston register r27
+	
+bit1:
 	lsr r28
-	brcs plus_one
-	;shift bit2
+	brcs plus_one_1
+bit2:
 	lsr r28
-	brcs plus_one
-	;shift bit3
+	brcs plus_one_2
+bit3:
 	lsr r28
-	brcs plus_one
-	;shift bit4
+	brcs plus_one_3
+bit4:
 	lsr r28
-	brcs plus_one
-	;shift bit5
+	brcs plus_one_4
+bit5:
 	lsr r28
-	brcs plus_one
-	;shift bit6
+	brcs plus_one_5
+bit6:
 	lsr r28
-	brcs plus_one
-	;shift bit7
+	brcs plus_one_6
+bit7:
 	lsr r28
-	brcs plus_one
+	brcs plus_one_7
+	rjmp go_on
 
 ;auksanei kata 1
-plus_one:
+plus_one_0:
 	inc r27
-	ret
+	rjmp bit1
+
+plus_one_1:
+	inc r27
+	rjmp bit2
+
+plus_one_2:
+	inc r27
+	rjmp bit3
+
+plus_one_3:
+	inc r27
+	rjmp bit4
+
+plus_one_4:
+	inc r27
+	rjmp bit4
+
+plus_one_5:
+	inc r27
+	rjmp bit6
+
+plus_one_6:
+	inc r27
+	rjmp bit7
+
+plus_one_7:
+	inc r27
+	
+
+
 ;telos plus_one
 
 ;kanw AND me 0000 1111	
 ;set bit mask ston r16 gia na exw ari8mo mono sta 4 lsb, gia asfaleia , mporei k na mhn xreiazetai
+go_on:
 	ldi r16, 0x0F
 	and r27, r16 ;bitwise and. To apotelesma apo8hkeuetai ston r27
 
+	ser r29
+	out PORTC, r29
 	out DDRC, r27 ;ta deixnw sta leds
 
 	reti
@@ -105,8 +139,8 @@ plus_one:
 wait_msec:
 	push r24
 	push r25
-	ldi r24, lo8(998)
-	ldi r25, hi8(998)
+	ldi r24, low(998)
+	ldi r25, high(998)
 	rcall wait_usec
 	pop r25
 	pop r24
