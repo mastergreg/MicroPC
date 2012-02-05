@@ -1,13 +1,9 @@
-/*
- * AVRAssembler2.asm
- *
- *  Created: 31/1/2012 7:58:21 ??
- *   Author: Eleni
-
-
-
-
- */ 
+ ;
+ ;  part2.asm
+ ;
+ ;  Created: 31/1/2012 7:58:21 ??
+ ;  Author: Eleni
+ ;
 
 .org 0x00
 	rjmp main

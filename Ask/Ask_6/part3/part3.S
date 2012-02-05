@@ -1,4 +1,3 @@
-.include "m16def.inc"
 .org 0x000
     rjmp main
 .org 0x002

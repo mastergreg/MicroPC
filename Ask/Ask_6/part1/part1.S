@@ -1,9 +1,9 @@
-/*
- * part1.asm
- *
- *  Created: 29/1/2012 11:50:22 ??
- *   Author: Valia
- */ 
+ ;
+ ;part1.asm
+ ;
+ ; Created: 29/1/2012 11:50:22 ??
+ ;  Author: Valia
+ ; 
 
  ;.include "m16def.inc"
  .def temp1 = r24
@@ -74,7 +74,7 @@ exit:
 	pop metrhths
 	reti
 
-/*routines pou pragmatopoioun ka8ysterhsh tosa msec, oso to periexomeno twn r25-r24*/
+;routines pou pragmatopoioun ka8ysterhsh tosa msec, oso to periexomeno twn r25-r24
 wait_msec:
 	push temp1
 	push temp2
