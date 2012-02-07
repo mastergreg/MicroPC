@@ -1,0 +1,60 @@
+\documentclass[a4paper,10pt]{article} \usepackage{anysize}
+\marginsize{2cm}{2cm}{1cm}{1cm}
+%\textwidth 6.0in \textheight = 664pt
+\usepackage{xltxtra}
+\usepackage{xunicode}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{xgreek}
+\usepackage{fancyvrb}
+\usepackage{minted}
+\usepackage{listings}
+\usepackage{enumitem} 
+\usepackage{framed} 
+\usepackage{relsize}
+\usepackage{float} 
+\setmainfont[Mapping=tex-text]{CMU Serif}
+\begin{document}
+
+\def\thesubsection {Άσκηση (\roman{subsection})}
+
+\include{title/title}
+
+\section*{} 
+\subsection{}
+
+Στην άσκηση αυτή ζητείται στο χρονόμετρο που απεικονίζεται στην PORTA και
+υλοποιείται με ταχύτητα 100 msec ανά μέτρηση, όταν ενεργοποιείται εξωτερική
+διακοπή INT0, αν το PD0 είναι μηδέν, να απαριθμεί τις διακοπές και να
+εμφανίζει το πλήθος τους στην PORTB. Γι' αυτό το σκοπό ενεργοποιούμε με τις
+κατάλληλες εντολές τις διακοπές στο κυρίως πρόγραμμα και αρχικά βάζουμε το
+.org 0x002 που επιτρέπει την εξυπηρέτηση της διακοπής INT0 στον Atmega16.
+
+\noindent Κυρίως κώδικας:
+\inputminted[linenos,obeytabs,fontsize=\footnotesize]{nasm}{files/part1.S}
+
+\subsection{}
+Σε αυτό το μέρος πραγματοποιήσαμε ένα πρόγραμμα μέτρησης το οποίο διακόπτεται
+μόνο από την διακοπή INT1 (push button button PD3).  Το πρόγραμμα μέτρησης
+εμφανίζεται στην σειρά led PA. Όταν έχουμε διακοπή πρέπει να διαβάζουμε από τα
+dip switches B και να μετράμε πόσα είναι ON.  Το πόσα είναι ON φαίνεται στα
+leds PC. Μετά την διακοπή συνεχίζεται κανονικά η μέτρηση στα leds PA.  Το
+πρόγραμμα μέτρησης είναι ακριβώς όπως το δεθέν της εκφώνησης. Αυτή την φορά
+απλά αναγνωρίζονται οι διακοπές INT1. Ο κώδικας εξυπηρέτησης της διακοπής
+βρίσκεται στην label ISR1. Το πόσα dip switches είναι ON υπολογίζεται ως εξής:
+διαβάζουμε από τον PINB, και κάνουμε shift δεξιά. Αν έχουμε carry, τότε
+αυξάνουμε κατά 1 το άθροισμα των switches που είναι on. Διαφορετικά ελέγχουμε
+το επόμενο ψηφίο. Αυτό γίνεται και για τα 8 bits.  Στο τέλος, για ασφάλεια
+ώστε να έχουμε το αποτέλεσμα στα 4 least significant bits, κάνουμε μια bitwise
+λογική πράξη and με τον αριθμό 00001111.
+
+Έπειτα δείχνουμε το αποτέλεσμα στα leds PC. Ο κώδικάς μας: 
+
+\noindent Κυρίως κώδικας:
+\inputminted[linenos,obeytabs,fontsize=\footnotesize]{nasm}{files/part2.S}
+
+\subsection{}
+
+\noindent Κυρίως κώδικας:
+\inputminted[linenos,obeytabs,fontsize=\footnotesize]{nasm}{files/part3.S}
+\end{document}
