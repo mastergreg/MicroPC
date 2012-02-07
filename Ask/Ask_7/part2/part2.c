@@ -6,7 +6,7 @@
 
 * Creation Date : 07-02-2012
 
-* Last Modified : Tue 07 Feb 2012 09:24:39 PM EET
+* Last Modified : Wed 08 Feb 2012 12:09:50 AM EET
 
 * Created By : Greg Liras <gregliras@gmail.com>
 
@@ -17,27 +17,29 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 int f0 ( int c )
 {
-    int i;
-    for( i = 0 ; i < 4 ; ++i, c <<=1 )
-    {
+    for( ; c > 0 ; c >>=1 )
         if ( ( c & 3 ) == 3 )
             return 0;
-    }
     return 1;
 }
 int f1 ( int c )
 {
-    c &=31;
-    return  c <= 15 || c == 31;
-}
-int f2 ( int c )
-{
-    return f0(c) || f1(c);
+    if (  c <= 15 || c == 31 )
+        return 1;
+    return 0;
 }
 int main(void)
 {
     DDRA = 0xff;
     DDRC = 0x00;
+    int f_0;
+    int f_1;
+    int c;
     for( ;; )
-        PORTA = f0(PINC) | (f1(PINC) << 1) | (f2(PINC) << 2);
+    {
+        c = PINC & 31;
+        f_0 = f0( c );
+        f_1 = f1( c );
+        PORTA = f_0 | ( f_1 << 1) | ( ( f_0 | f_1 ) << 2);
+    }
 }

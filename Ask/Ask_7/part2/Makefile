@@ -2,7 +2,7 @@ TARGET=part2
 CC=avr-gcc
 OBJCOPY=avr-objcopy
 CHIP=atmega16
-CFLAGS=-Os -g 
+CFLAGS=-O3 -g 
 ASFLAGS=-x assembler-with-cpp 
 FREQ=8000000
 
@@ -25,7 +25,7 @@ hex:	$(TARGET).hex
 %.hex: 	%.elf
 	$(OBJCOPY) -j .text -j .data -O ihex $< $@
 clean:
-	rm $(TARGET).{elf,s,hex}
+	rm -f $(TARGET).{elf,s,hex}
 
 debug:	sim
 	ddd --debugger avr-gdb
