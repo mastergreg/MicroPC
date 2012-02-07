@@ -6,7 +6,7 @@
 
 * Creation Date : 07-02-2012
 
-* Last Modified : Tue 07 Feb 2012 08:50:40 PM EET
+* Last Modified : Tue 07 Feb 2012 09:01:59 PM EET
 
 * Created By : Greg Liras <gregliras@gmail.com>
 
@@ -17,8 +17,15 @@ _._._._._._._._._._._._._._._._._._._._._.*/
 
 int f0 ( int c )
 {
-    return c <= 15;
+    int i;
+    for( i = 0 ; i < 4 ; ++i )
+    {
+        if ( ( c & 3 ) == 3 )
+            return 1;
+    }
+    return 0;
 }
+
 int f1 ( int c )
 {
     return (c & 31) != 31;
