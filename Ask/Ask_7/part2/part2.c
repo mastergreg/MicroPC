@@ -6,7 +6,7 @@
 
 * Creation Date : 07-02-2012
 
-* Last Modified : Tue 07 Feb 2012 09:01:59 PM EET
+* Last Modified : Tue 07 Feb 2012 09:02:31 PM EET
 
 * Created By : Greg Liras <gregliras@gmail.com>
 
@@ -20,7 +20,7 @@ int f0 ( int c )
     int i;
     for( i = 0 ; i < 4 ; ++i )
     {
-        if ( ( c & 3 ) == 3 )
+        if ( ( ( c << i ) & 3 ) == 3 )
             return 1;
     }
     return 0;
