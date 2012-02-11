@@ -1,4 +1,4 @@
-CC=xetex
+CC=xelatex
 TARGET=mlabc07ex7
 all: ${TARGET}.pdf
 %.pdf: 	%.tex title/* files/*

@@ -10,10 +10,10 @@ reset:
     out SPH,r24
     ser r24
     out DDRA,r24
-    ; PORTA output
+    // PORTA output
     ldi r24 ,(1 << PC7) | (1 << PC6) | (1 << PC5) | (1 << PC4)
     out DDRC ,r24
-    ; 4x4 pad input
+    // 4x4 pad input
 
 lock:
     rcall scan_keypad
