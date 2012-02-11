@@ -33,7 +33,13 @@ pass:
     ldi r25,hi8(2000)
     rcall wait_msec
     ldi r24,0x00
+    ldi r25,0x00
     out PORTA, r24
+    ;//reset the memory as well
+    ldi r26 ,lo8(_tmp_)
+    ldi r27 ,hi8(_tmp_)
+    st X+ ,r24
+    st X ,r25
     rjmp lock
     
 
