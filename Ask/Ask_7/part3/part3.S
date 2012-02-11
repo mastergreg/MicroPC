@@ -17,9 +17,11 @@ reset:
     ldi r24 ,(1 << PC7) | (1 << PC6) | (1 << PC5) | (1 << PC4)
     out DDRC ,r24
     ;// 4x4 pad input
-
+    rcall scan_keypad_rising_edge
+    ;// initialize 
 lock:
-    rcall scan_keypad
+    ldi r24, 0x14
+    rcall scan_keypad_rising_edge
     cpi r24, 0x12
     brne lock
     rjmp pass
