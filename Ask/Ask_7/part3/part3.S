@@ -1,6 +1,9 @@
-#include <avr/io.h>
 #define __SFR_OFFSET 0
+#include <avr/io.h>
 
+.data
+    _tmp_: .byte 2
+.text
 .global main
 main:
 reset: 
@@ -10,10 +13,10 @@ reset:
     out SPH,r24
     ser r24
     out DDRA,r24
-    // PORTA output
+    ;// PORTA output
     ldi r24 ,(1 << PC7) | (1 << PC6) | (1 << PC5) | (1 << PC4)
     out DDRC ,r24
-    // 4x4 pad input
+    ;// 4x4 pad input
 
 lock:
     rcall scan_keypad
@@ -64,6 +67,31 @@ scan_keypad:
     movw r24 ,r26
     ret
 
+
+scan_keypad_rising_edge:
+    mov r22 ,r24
+    rcall scan_keypad
+    push r24
+    push r25
+    mov r24 ,r22
+    ldi r25 ,0
+    rcall wait_msec
+    rcall scan_keypad
+    pop r23
+    pop r22
+    and r24 ,r22
+    and r25 ,r23
+    ldi r26 ,lo8(_tmp_)
+    ldi r27 ,hi8(_tmp_)
+    ld r23 ,X+
+    ld r22 ,X
+    st X ,r24
+    st -X ,r25
+    com r23
+    com r22
+    and r24 ,r22
+    and r25 ,r23
+    ret
 
 
 

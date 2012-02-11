@@ -2,8 +2,9 @@
 dos2unix $1
 sed -i 's/low/lo8/' $1
 sed -i 's/high/hi8/' $1
+sed -i 's.;.;//.' $1
 sed -i '1i.global main' $1
-sed -i '1i#define __SFR_OFFSET 0' $1
 sed -i '1i#include <avr/interrupt.h>' $1
 sed -i '1i#include <avr/io.h>' $1
+sed -i '1i#define __SFR_OFFSET 0' $1
 sed -i '1i/*Includes for compatibility with GNU toolchain*/' $1
