@@ -1,3 +1,4 @@
+%{{{ preamble
 \documentclass[a4paper,9pt]{article}
 \usepackage{anysize}
 \marginsize{2cm}{2cm}{1cm}{1cm}
@@ -14,43 +15,21 @@
 \usepackage{framed} 
 \usepackage{relsize}
 \usepackage{float} 
+\usepackage{pstricks}
+\usepackage{pst-node}
+\usepackage{pst-blur}
 \setmainfont[Mapping=tex-text]{FreeSerif}
+%}}}
 \begin{document}
 
-\def\thesubsection {Άσκηση (\roman{subsection})}
+\def\thesection {Άσκηση (\roman{section})}
 
 \include{title/title}
 
-\section*{} 
-\subsection{}
-
-
-\noindent Κυρίως κώδικας:
-\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part1.S}
-
-\subsection{}
-
-\noindent Κυρίως κώδικας:
-\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part2.c}
-
-\subsection{}
-
-\noindent Κυρίως κώδικας:
-\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part3.S}
-\subsection{}
-
-\noindent Κυρίως κώδικας:
-\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part4.S}
-\subsection{}
-
-\noindent Κυρίως κώδικας:
-\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part5.S}
-\subsection{}
-
-\noindent Κυρίως κώδικας:
-\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part6.S}
-\subsection{}
-
-\noindent Κυρίως κώδικας:
-\inputminted[linenos,obeytabs,fontsize=\footnotesize]{c}{files/part7.S}
+\include{parts/part1}
+\include{parts/part2}
+\include{parts/part3}
+\include{parts/part4}
+\include{parts/part5}
+\include{parts/part6}
 \end{document}

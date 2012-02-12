@@ -20,8 +20,21 @@ reset:
     rcall scan_keypad_rising_edge
     ;// initialize 
 lock:
+    ;//reset the memory
+    ldi r24,0x00
+    ldi r25,0x00
+    ldi r26 ,lo8(_tmp_)
+    ldi r27 ,hi8(_tmp_)
+    st X+ ,r24
+    st X ,r25
     ldi r24, 0x14
     rcall scan_keypad_rising_edge
+    cpi r24, 0x00
+    ;//first test failed
+    brne lock
+    ldi r24, 0x14
+    rcall scan_keypad_rising_edge
+    ;//second test failed
     cpi r24, 0x12
     brne lock
     rjmp pass
@@ -32,14 +45,9 @@ pass:
     ldi r24,lo8(2000)
     ldi r25,hi8(2000)
     rcall wait_msec
+    ;//reset the leds
     ldi r24,0x00
-    ldi r25,0x00
     out PORTA, r24
-    ;//reset the memory as well
-    ldi r26 ,lo8(_tmp_)
-    ldi r27 ,hi8(_tmp_)
-    st X+ ,r24
-    st X ,r25
     rjmp lock
     
 
