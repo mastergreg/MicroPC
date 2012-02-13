@@ -10,6 +10,8 @@ reset:
     out SPH,r24
     ser r24
     out DDRA,r24
+    clr r24
+    out DDRB,r24
 
 loop:
     rjmp loop
@@ -22,4 +24,9 @@ alarm:
     out PORTA,r24
     pop r24
     ret
+
+set_timer:
+    push r24
+    ldi r24,hi8(2048)
+    out 
 
