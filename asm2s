@@ -2,6 +2,10 @@
 dos2unix $1
 sed -i 's/low/lo8/' $1
 sed -i 's/high/hi8/' $1
+sed -i 's/DSEG/data/' $1
+sed -i 's/CSEG/text/' $1
+sed -i 's/.def/#define/' $1
+sed -i 's/=//' $1
 sed -i 's.;.;//.' $1
 sed -i '1i.global main' $1
 sed -i '1i#include <avr/interrupt.h>' $1
