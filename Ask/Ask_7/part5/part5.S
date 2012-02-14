@@ -40,13 +40,13 @@ getpass:
     clr r24
 dig0:
     rcall scan_keypad_rising_edge
-    cpi r24,0x0
+    ldi r24,0x14
     breq dig0
     cpi r24,0x80
     brne alarm_on
 
     rcall clear_tmp_
-    clr r24
+    ldi r24,0x14
 dig1:
     rcall scan_keypad_rising_edge
     cpi r24,0x0
@@ -55,7 +55,7 @@ dig1:
     brne alarm_on
 
     rcall clear_tmp_
-    clr r24
+    ldi r24,0x14
 dig2:
     rcall scan_keypad_rising_edge
     cpi r24,0x0
@@ -64,7 +64,8 @@ dig2:
     brne alarm_on
 
     rcall clear_tmp_
-    clr r24
+    ldi r24,0x14
+dig2:
 dig3:
     rcall scan_keypad_rising_edge
     cpi r24,0x0
@@ -88,6 +89,7 @@ clear_tmp_:
 
 alarm_on:
     push r24
+    rcall write_alarm_on
     ldi r24,0xff
     out PORTA,r24
     pop r24
@@ -115,6 +117,7 @@ write_alarm_on:
 
 alarm_off:
     push r24
+    rcall write_alarm_off
     ldi r24,0x00
     out PORTA,r24
     pop r24
@@ -122,6 +125,24 @@ alarm_off:
 
 write_alarm_off:
     rcall cls
+    ldi r24,'A'
+    rcall lcd_data
+    ldi r24,'L'
+    rcall lcd_data
+    ldi r24,'A'
+    rcall lcd_data
+    ldi r24,'R'
+    rcall lcd_data
+    ldi r24,'M'
+    rcall lcd_data
+    ldi r24,' '
+    rcall lcd_data
+    ldi r24,'O'
+    rcall lcd_data
+    ldi r24,'F'
+    rcall lcd_data
+    ldi r24,'F'
+    rcall lcd_data
     ret
 
 set_timer:
