@@ -27,14 +27,20 @@ lock:
     ldi r27 ,hi8(_tmp_)
     st X+ ,r24
     st X ,r25
+first_key:
     ldi r24, 0x14
     rcall scan_keypad_rising_edge
-    cpi r24, 0x00
+    cpi r24,0x00
+    breq first_key
+    cpi r24, 0x02
     ;//first test failed
     brne lock
+second_key:
     ldi r24, 0x14
     rcall scan_keypad_rising_edge
     ;//second test failed
+    cpi r24,0x02
+    breq second_key
     cpi r24, 0x12
     brne lock
     rjmp pass
