@@ -17,17 +17,111 @@ reset:
     out DDRA,r24
     clr r24
     out DDRB,r24
+    rcall lcd_init ;//initialize
 
 loop:
     rjmp loop
 
 
+cls:
+    push r24
+    ldi r24,0x01 
+    rcall lcd_command
+    ldi r24,lo8(1530)
+    ldi r25,hi8(1530)
+    rcall wait_usec
+    pop r24
+    ret
+    
 
-alarm:
+getpass:
+    rcall cls
+    rcall clear_tmp_
+    clr r24
+dig0:
+    rcall scan_keypad_rising_edge
+    cpi r24,0x0
+    breq dig0
+    cpi r24,0x80
+    brne alarm_on
+
+    rcall clear_tmp_
+    clr r24
+dig1:
+    rcall scan_keypad_rising_edge
+    cpi r24,0x0
+    breq dig1
+    cpi r24,0x40
+    brne alarm_on
+
+    rcall clear_tmp_
+    clr r24
+dig2:
+    rcall scan_keypad_rising_edge
+    cpi r24,0x0
+    breq dig2
+    cpi r24,0x02
+    brne alarm_on
+
+    rcall clear_tmp_
+    clr r24
+dig3:
+    rcall scan_keypad_rising_edge
+    cpi r24,0x0
+    breq dig3
+    cpi r24,0x10
+    brne alarm_on
+    rcall alarm_off
+    ret
+
+clear_tmp_:
+    push r24
+    push r26
+    ldi r26,lo8(_tmp_)  ;//ka8arisma mnhmhs
+    ldi r27,hi8(_tmp_)
+    ldi r24,0x0
+    st  X+,r24
+    st  X,r24
+    pop r26
+    pop r24
+    ret
+
+alarm_on:
     push r24
     ldi r24,0xff
     out PORTA,r24
     pop r24
+    ret
+
+write_alarm_on:
+    rcall cls
+    ldi r24,'A'
+    rcall lcd_data
+    ldi r24,'L'
+    rcall lcd_data
+    ldi r24,'A'
+    rcall lcd_data
+    ldi r24,'R'
+    rcall lcd_data
+    ldi r24,'M'
+    rcall lcd_data
+    ldi r24,' '
+    rcall lcd_data
+    ldi r24,'O'
+    rcall lcd_data
+    ldi r24,'N'
+    rcall lcd_data
+    ret
+
+alarm_off:
+    push r24
+    ldi r24,0x00
+    out PORTA,r24
+    pop r24
+    ret
+
+write_alarm_off:
+    rcall cls
     ret
 
 set_timer:
