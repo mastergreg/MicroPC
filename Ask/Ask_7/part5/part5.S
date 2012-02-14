@@ -6,7 +6,14 @@
     _tmp_ :.byte 2
 
 .text
+
 .global main
+.org 0x000
+    rjmp main
+.org 0x010
+    rjmp ovf_int_rout
+    reti
+
 main:
 reset: 
     ldi r24,lo8(RAMEND)
@@ -20,8 +27,36 @@ reset:
     rcall lcd_init ;//initialize
 
 loop:
+    in r24,PINB
+    cpi r24,0x0
+    breq loop
+    rcall set_timer
+    rcall getpass
     rjmp loop
 
+set_timer:
+    push r24
+    ;activate timer1
+    ;2 is TOIE1
+    ;avrStudio doesn't know about it
+    ldi r24,(1 << 2)
+    out TIMSK,r24
+    ldi r24,(1 << CS12)|(0<<CS11)|(1<<CS10)
+    out TCCR1B,r24
+
+    ldi r24,0xFF
+    sts TCNT1H,r24
+    ldi r24,0x72
+    sts TCNT1L,r24
+
+    pop r24
+    sei
+    ret
+
+ovf_int_rout:
+    rcall alarm_on
+    sei
+    reti
 
 cls:
     push r24
@@ -65,7 +100,6 @@ dig2:
 
     rcall clear_tmp_
     ldi r24,0x14
-dig2:
 dig3:
     rcall scan_keypad_rising_edge
     cpi r24,0x0
@@ -120,6 +154,7 @@ alarm_off:
     rcall write_alarm_off
     ldi r24,0x00
     out PORTA,r24
+    rcall set_timer_off
     pop r24
     ret
 
@@ -145,9 +180,11 @@ write_alarm_off:
     rcall lcd_data
     ret
 
-set_timer:
+set_timer_off:
     push r24
-    ldi r24,hi8(2048)
+    ldi r24,0x0
+    out TCCR1A,r24
+    out TCCR1B,r24
     ret
 
 keypad_to_ascii:
