@@ -23,7 +23,7 @@ hex:	$(TARGET).hex
 %.s:	%.c
 	$(CC) -S -mmcu=$(CHIP) $(ASFLAGS) $< > $@
 %.hex: 	%.elf
-	$(OBJCOPY) -j .text -j .data -O ihex $< $@
+	$(OBJCOPY) -j .org -j .text -j .data -O ihex $< $@
 clean:
 	rm -f $(TARGET).{elf,s,hex}
 

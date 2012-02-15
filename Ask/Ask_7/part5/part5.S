@@ -20,16 +20,19 @@ reset:
     out SPL,r24
     ldi r24,hi8(RAMEND)
     out SPH,r24
+    ;//ser gia input
     ser r24
     out DDRA,r24
+    ;//clr gia output
     clr r24
-    out DDRB,r24
+    out DDRD,r24
     rcall lcd_init ;//initialize
 
 loop:
-    in r24,PINB
+    in r24,PIND
     cpi r24,0x0
     breq loop
+    rcall alarm_on
     rcall set_timer
     rcall getpass
     rjmp loop
@@ -46,7 +49,7 @@ set_timer:
 
     ldi r24,0xFF
     sts TCNT1H,r24
-    ldi r24,0x72
+    ldi r24,0xFF
     sts TCNT1L,r24
 
     pop r24
@@ -123,10 +126,10 @@ clear_tmp_:
 
 alarm_on:
     push r24
-    rcall write_alarm_on
     ldi r24,0xff
     out PORTA,r24
     pop r24
+    rcall write_alarm_on
     ret
 
 write_alarm_on:
