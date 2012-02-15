@@ -25,14 +25,27 @@ reset:
     out DDRA,r24
     ;//clr gia output
     clr r24
-    out DDRD,r24
+    out DDRB,r24
+
+    ldi r24 ,(1 << PC7) | (1 << PC6) | (1 << PC5) | (1 << PC4)
+    out DDRC ,r24
+
     rcall lcd_init ;//initialize
 
 loop:
-    in r24,PIND
+    in r24,PINB
     cpi r24,0x0
     breq loop
+
     rcall alarm_on
+
+
+    ldi r24,0xff
+    out PORTA,r24
+    rcall wait_msec
+
+    rcall alarm_off
+
     rcall set_timer
     rcall getpass
     rjmp loop
@@ -77,15 +90,26 @@ getpass:
     rcall clear_tmp_
     clr r24
 dig0:
-    rcall scan_keypad_rising_edge
     ldi r24,0x14
+    rcall scan_keypad_rising_edge
+
+    out PORTA,r24
+    push r24
+    ldi r24,0xFF
+    ldi r25,0xFF
+    rcall wait_usec
+    pop r24
+
+    cpi r24,0x0
     breq dig0
     cpi r24,0x80
     brne alarm_on
 
+
     rcall clear_tmp_
     ldi r24,0x14
 dig1:
+    ldi r24,0x14
     rcall scan_keypad_rising_edge
     cpi r24,0x0
     breq dig1
@@ -334,7 +358,7 @@ lcd_command:
 
 write_2_nibbles:
     push r24
-    in r25,PIND
+    in r25,PINB
     andi r25,0x0f
     andi r24,0xf0
     add r24,r25

@@ -30,24 +30,31 @@
 #define dek  r23
 #define mon  r19
 #define quantum  r24
+ #define temp1  r24
+ #define temp2  r25
 
 main:
 
     ldi r24 ,lo8(RAMEND)
     out SPL, r24
     ldi r24, hi8(RAMEND)
-	out SPL, r24
+	out SPH, r24
 
     clr r25             ;//bazw mhdenika gia eisodo sthn A
-    out DDRA, r25
+    out DDRB, r25
     
     ser r25				;//bazw 1 gia eksodo sthn D
     out DDRD, r25
 
+
+
 	rcall lcd_init
 
 start:
-    in input, PINA
+
+
+  
+    in input, PINB
     mov tempo, input
     lsl tempo
     brcc positive		;//an carry = 0 pame sto positive
@@ -90,6 +97,12 @@ count_mon:
 
 print_to_lcd:
 	;//tupwnw to proshmo
+lcd_clear:
+	ldi r24, 0x01		;//ka8arismos o8onhs
+    rcall lcd_command
+    ldi r24, lo8(1530)
+    ldi r25, hi8(1530)
+    rcall wait_usec	;//telos ka8arismos o8onhs
     mov quantum, sign
     rcall lcd_data 
 
@@ -112,117 +125,115 @@ check_monades:
     mov quantum, mon	;//oi monades o,ti kai na nai tis deixnw, giati exw sumplhrwma ws pros 2. Opote 8a deiksw gia 0 to +0.
     rcall lcd_data
     
+    ldi r24,0xAA
+    ldi r25,0x00
+    rcall wait_msec
+
 
 	rjmp start
 
 
 ;//=======routines gia thn o8onh=========
+lcd_init:
+    ldi r24,40
+    ldi r25,0
+    rcall wait_msec
 
-;//_______WRITE_2_NIBBLES______
+    ldi r24,0x30
+    out PORTD,r24
+    sbi PORTD,PD3
+    cbi PORTD,PD3
+    ldi r24,39
+    ldi r25,0
+    rcall wait_usec
+
+    ldi r24,0x30
+    out PORTD,r24
+    sbi PORTD,PD3
+    cbi PORTD,PD3
+    ldi r24,39
+    ldi r25,0
+    rcall wait_usec
+
+    ldi r24,0x20
+    out PORTD,r24
+    sbi PORTD,PD3
+    cbi PORTD,PD3
+    ldi r24,39
+    ldi r25,0
+    rcall wait_usec
+
+    ldi r24,0x28
+    rcall lcd_command
+
+    ldi r24,0x0c
+    rcall lcd_command
+
+    ldi r24,0x01
+    rcall lcd_command
+    ldi r24,lo8(1530)
+    ldi r25,hi8(1530)
+    rcall wait_usec
+
+    ldi r24,0x06
+    rcall lcd_command
+
+    ret
+
+lcd_data:
+    sbi PORTD,PD2
+    rcall write_2_nibbles
+    ldi r24,43
+    ldi r25,0
+    rcall wait_usec
+    ret
+
+lcd_command:
+    cbi PORTD,PD2
+    rcall write_2_nibbles
+    ldi r24,39
+    ldi r25,0
+    rcall wait_usec
+    ret
+
 write_2_nibbles:
     push r24
-    in r25, PIND
-    andi r25, 0x0f
-    andi r24, 0xf0
-    add r24, r25
-    out PORTD, r24
-    sbi PORTD, PD3
-    cbi PORTD, PD3
+    in r25,PIND
+    andi r25,0x0f
+    andi r24,0xf0
+    add r24,r25
+    out PORTD,r24
+    sbi PORTD,PD3
+    cbi PORTD,PD3
     pop r24
     swap r24
-    andi r24 ,0xf0 
-    add r24, r25
-    out PORTD, r24
-    sbi PORTD, PD3
-    cbi PORTD, PD3
-	
-	ret 
-;//________LCD_DATA________
-lcd_data:
-    sbi PORTD, PD2
-    ;//ldi r25, 0x04
-	rcall write_2_nibbles
-    ldi r24, 43
-    ldi r25, 0
- ;//   rcall wait_usec
-    ret
-;//_______LCD_COMMAND______
-lcd_command:
-    cbi PORTD, PD2
-    rcall write_2_nibbles
-    ldi r24, 39 ;//gia anamonh 39 usec
-    ldi r25,0
-;//    rcall wait_usec
-    ret
-;//_______LCD_INIT________
-lcd_init:
-    ldi r24, 40
-    ldi r25, 0
- ;//   rcall wait_msec
-    
-    ldi r24, 0x30
-    out PORTD, r24
-    sbi PORTD, PD3
-    cbi PORTD, PD3
-    ldi r24, 39
-    ldi r25, 0
-;//    rcall wait_usec
-
-    ldi r24, 0x30
-    out PORTD, r24
-    sbi PORTD, PD3
-    cbi PORTD, PD3
-    ldi r24, 39
-    ldi r25,0
- ;//   rcall wait_usec
-
-    ldi r24, 0x20
-    out PORTD, r24
-    sbi PORTD, PD3
-    cbi PORTD, PD3
-    ldi r24, 39
-    ldi r25, 0
- ;//   rcall wait_usec
-
-    ldi r24, 0x28
-    rcall lcd_command
-
-    ldi r24, 0x0c
-    rcall lcd_command
-    
-    ldi r24, 0x01
-    rcall lcd_command
-    ldi r24, lo8(1530)
-    ldi r25, hi8(1530)
- ;//   rcall wait_usec
-
-    ldi r24, 0x06
-    rcall lcd_command
-
+    andi r24,0xf0
+    add r24,r25
+    out PORTD,r24
+    sbi PORTD,PD3
+    cbi PORTD,PD3
     ret
 
 ;//=========wait routines==========
-
-wait_usec:
-    sbiw r24, 1
-    nop
-    nop
-    nop
-    nop
-    brne wait_usec
-    ret
-
-wait_msec:
-    push r24
-    push r24
-    ldi r24, lo8(998)
-    ldi r25, hi8(998)
-    rcall wait_usec
-    pop r24
-    pop r25
-    sbiw r24, 1
+    wait_msec:
+    push temp1
+    push temp2
+    ldi temp1, lo8(998)
+    ldi temp2, hi8(998)
+    rcall wait_usec 
+    pop temp2
+    pop temp1
+    sbiw temp1, 1
     brne wait_msec
+    
     ret
 
+    wait_usec:
+    sbiw temp1,1
+    nop
+    nop 
+    nop 
+    nop 
+    brne wait_usec  
 
-
+    ret
