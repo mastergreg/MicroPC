@@ -36,7 +36,7 @@ main:
     out DDRB, temp1
 
     clr temp1
-    out DDRA, temp1
+    out DDRD, temp1
 
     clr regC
     out DDRC, regC
@@ -49,7 +49,7 @@ start:
 etik1:      ;//perimenei mexri na ginei 0 (button)
     in tempo, PINC
     lsr tempo
-    brcs etik1    
+    ;brcc syn1
     ori output1, 1
 
 syn1:
@@ -59,7 +59,7 @@ etik2:      ;//perimenei mexri na ginei 0 (button)
     in tempo, PINC
     lsr tempo
     lsr tempo
-    brcs etik2
+    ;brcc syn2
     ori output1, 2
 
 syn2:
@@ -70,7 +70,7 @@ etik3:      ;//perimenei mexri na ginei 0 (button)
     lsr tempo
     lsr tempo
     lsr tempo
-    brcs etik3
+    ;brcc syn3
     ori output1, 4
  
  syn3:
@@ -82,7 +82,7 @@ etik4:      ;//perimenei mexri na ginei 0 (button)
     lsr tempo
     lsr tempo
     lsr tempo
-    brcs etik4
+    ;brcc syn4
     ori output1, 8
 
  syn4:
@@ -94,7 +94,7 @@ etik5:      ;//perimenei mexri na ginei 0 (button)
     lsl tempo
     lsl tempo
     lsl tempo
-    brcs etik5
+    ;brcs etik5
     ori output1, 0x010
 
 syn5:
@@ -105,7 +105,7 @@ etik6:      ;//perimenei mexri na ginei 0 (button)
     lsl tempo
     lsl tempo
     lsl tempo
-    brcs etik6
+    ;brcs etik6
     ori output1, 0x020
  
  syn6:
@@ -115,7 +115,7 @@ etik6:      ;//perimenei mexri na ginei 0 (button)
     in tempo, PINC
     lsl tempo
     lsl tempo
-    brcs etik7
+    ;brcs etik7
     ori output1, 0x040
 
 syn7:
@@ -124,18 +124,20 @@ syn7:
  etik8:      ;//perimenei mexri na ginei 0 (button)
     in tempo, PINC
     lsl tempo
-    brcs etik8 
+    ;brcs etik8 
     ori output1, 0x080
 
  synexise:
 
-    in input, PINA  
+    in input, PIND  
     clr temp2   ;//mhdenismos exodwn
     clr output
 
 gate_1:
     lsr input
-    brcc exit1_gate1  ;//an to lsb = 0 feugoume
+
+	
+	brcc exit1_gate1  ;//an to lsb = 0 feugoume
     lsr input
     brcc exit_gate1  ;//an to 2o lsb = 0 feugoume
     inc temp2
@@ -150,7 +152,7 @@ gate_2:
     brcc exit1_gate2 ;//an to 3o lsb = 0 feugoume
     lsr input
     brcc exit_gate2  ;//an to 4o lsb = 0 feugoume
-    ori output, 2
+    ori output, 3
 	rjmp exit_gate2
 exit1_gate2:
 	lsr input 
