@@ -20,15 +20,17 @@ reset:
     out SPL,r24
     ldi r24,hi8(RAMEND)
     out SPH,r24
-    ;//ser gia input
+
     ser r24
     out DDRA,r24
-    ;//clr gia output
+    out DDRD,r24
+
     clr r24
     out DDRB,r24
 
     ldi r24 ,(1 << PC7) | (1 << PC6) | (1 << PC5) | (1 << PC4)
     out DDRC ,r24
+
 
     rcall lcd_init ;//initialize
 
@@ -37,16 +39,8 @@ loop:
     cpi r24,0x0
     breq loop
 
-    rcall alarm_on
 
-
-    ldi r24,0xff
-    out PORTA,r24
-    rcall wait_msec
-
-    rcall alarm_off
-
-    rcall set_timer
+    ;rcall set_timer
     rcall getpass
     rjmp loop
 
@@ -92,13 +86,6 @@ getpass:
 dig0:
     ldi r24,0x14
     rcall scan_keypad_rising_edge
-
-    out PORTA,r24
-    push r24
-    ldi r24,0xFF
-    ldi r25,0xFF
-    rcall wait_usec
-    pop r24
 
     cpi r24,0x0
     breq dig0
@@ -153,11 +140,10 @@ alarm_on:
     ldi r24,0xff
     out PORTA,r24
     pop r24
-    rcall write_alarm_on
-    ret
 
 write_alarm_on:
-    rcall cls
+    rcall lcd_init
+    ;rcall cls
     ldi r24,'A'
     rcall lcd_data
     ldi r24,'L'
@@ -297,7 +283,7 @@ scan_keypad_rising_edge:
 lcd_init:
     ldi r24,40
     ldi r25,0
-    ;//rcall wait_msec
+    rcall wait_msec
 
     ldi r24,0x30
     out PORTD,r24
@@ -305,7 +291,7 @@ lcd_init:
     cbi PORTD,PD3
     ldi r24,39
     ldi r25,0
-    ;//rcall wait_usec
+    rcall wait_usec
 
     ldi r24,0x30
     out PORTD,r24
@@ -313,7 +299,7 @@ lcd_init:
     cbi PORTD,PD3
     ldi r24,39
     ldi r25,0
-    ;//rcall wait_usec
+    rcall wait_usec
 
     ldi r24,0x20
     out PORTD,r24
@@ -321,7 +307,7 @@ lcd_init:
     cbi PORTD,PD3
     ldi r24,39
     ldi r25,0
-    ;//rcall wait_usec
+    rcall wait_usec
 
     ldi r24,0x28
     rcall lcd_command
@@ -333,7 +319,7 @@ lcd_init:
     rcall lcd_command
     ldi r24,lo8(1530)
     ldi r25,hi8(1530)
-    ;//rcall wait_usec
+    rcall wait_usec
 
     ldi r24,0x06
     rcall lcd_command
@@ -345,7 +331,7 @@ lcd_data:
     rcall write_2_nibbles
     ldi r24,43
     ldi r25,0
-    ;//rcall wait_usec
+    rcall wait_usec
     ret
 
 lcd_command:
@@ -353,7 +339,7 @@ lcd_command:
     rcall write_2_nibbles
     ldi r24,39
     ldi r25,0
-    ;//rcall wait_usec
+    rcall wait_usec
     ret
 
 write_2_nibbles:
