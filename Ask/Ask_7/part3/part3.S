@@ -11,14 +11,14 @@ reset:
     out SPL,r24
     ldi r24,hi8(RAMEND)
     out SPH,r24
+    ;// PORTA output
     ser r24
     out DDRA,r24
-    ;// PORTA output
+    ;// 4x4 pad input
     ldi r24 ,(1 << PC7) | (1 << PC6) | (1 << PC5) | (1 << PC4)
     out DDRC ,r24
-    ;// 4x4 pad input
-    rcall scan_keypad_rising_edge
     ;// initialize 
+    rcall scan_keypad_rising_edge
 lock:
     ;//reset the memory
     ldi r24,0x00
@@ -46,12 +46,11 @@ first_key:
 second_key:
     ldi r24, 0x14
     rcall scan_keypad_rising_edge
-    ;//second test failed
     cpi r24,0x00
     breq second_key
     cpi r24, 0x10
+    ;//second test failed
     brne lock
-    rjmp pass
 
 pass:
     ldi r24,0xff
