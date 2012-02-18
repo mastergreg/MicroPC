@@ -40,7 +40,7 @@ loop:
     breq loop
 
 
-    ;rcall set_timer
+    rcall set_timer
     rcall getpass
     rjmp loop
 
@@ -123,18 +123,6 @@ dig3:
     rcall alarm_off
     ret
 
-clear_tmp_:
-    push r24
-    push r26
-    ldi r26,lo8(_tmp_)  ;//ka8arisma mnhmhs
-    ldi r27,hi8(_tmp_)
-    ldi r24,0x0
-    st  X+,r24
-    st  X,r24
-    pop r26
-    pop r24
-    ret
-
 alarm_on:
     push r24
     ldi r24,0xff
@@ -192,6 +180,19 @@ write_alarm_off:
     ldi r24,'F'
     rcall lcd_data
     ret
+
+clear_tmp_:
+    push r24
+    push r26
+    ldi r26,lo8(_tmp_)  ;//ka8arisma mnhmhs
+    ldi r27,hi8(_tmp_)
+    ldi r24,0x0
+    st  X+,r24
+    st  X,r24
+    pop r26
+    pop r24
+    ret
+
 
 set_timer_off:
     push r24
